@@ -1,5 +1,5 @@
 ﻿
-using StateMachine;
+using BaseLibrary.StateMachine;
 using System;
 using UnityEngine;
 namespace Data
