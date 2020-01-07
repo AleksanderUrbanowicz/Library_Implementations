@@ -1,8 +1,7 @@
-﻿
-using StateMachine;
+﻿using StateMachine;
 using System;
 using UnityEngine;
-namespace Data
+namespace GeneralImplementations.Data
 {
     [Serializable]
     [CreateAssetMenu(fileName = "RaycastData_", menuName = "ScriptableSystems/Helpers/Raycast Data Asset")]

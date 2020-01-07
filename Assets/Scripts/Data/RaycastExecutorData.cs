@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 
-namespace Data
+namespace GeneralImplementations.Data
 {
     public class RaycastExecutorData
     {
-        
+
         public bool boolOutput;
 
         public Vector3 collisionNormal;

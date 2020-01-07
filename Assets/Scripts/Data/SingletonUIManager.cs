@@ -5,7 +5,7 @@ using UI;
 using System.Linq;
 using BaseLibrary.Managers;
 
-namespace Managers
+namespace GeneralImplementations.Managers
 {
     [CreateAssetMenu(fileName = "Manager_UI", menuName = "Managers/ Singleton UI Manager")]
 
@@ -14,7 +14,7 @@ namespace Managers
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void BeforeSceneLoad() { CreateSingletonInstance(); }
-        
+
         public UI.PluggableUIData currentPluggableUI;
         public UI.PluggableUIData overridePluggableUI;
         public List<UI.PluggableUIData> pluggableUIs;
@@ -36,21 +36,23 @@ namespace Managers
 
             ipluggableUIs = Resources.LoadAll<ScriptableObject>("").Where(x => x is IPluggableUI).ToList();
 
-            
+
         }
 
         public PluggableUIData PluggableUIData
         {
-            get { if (overridePluggableUI == null)
+            get
+            {
+                if (overridePluggableUI == null)
                 {
 
                     return currentPluggableUI;
                 }
-            else
+                else
                 {
                     return overridePluggableUI;
                 }
-                }
+            }
             set { }
         }
     }

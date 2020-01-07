@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Managers
+namespace GeneralImplementations.Managers
 {
     public class Spawner : ISpawner
     {
@@ -12,7 +12,7 @@ namespace Managers
 
 
         }
-       
+
         public GameObject CreateInstance(Transform parent, Vector3 position, Quaternion rotation, ISpawnable _spawnable)
         {
 
