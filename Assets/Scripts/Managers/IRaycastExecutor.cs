@@ -1,5 +1,5 @@
 ﻿using BaseLibrary.Managers;
-using Data;
+using GeneralImplementations.Data;
 
 namespace GeneralImplementations.Managers
 {

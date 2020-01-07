@@ -1,12 +1,11 @@
-﻿
-using System;
+﻿using System;
 using UnityEngine;
-namespace Data
+namespace GeneralImplementations.Data
 {
     [Serializable]
     public class ParameterBase
     {
-       // [ConfigSelector(ParamsSetKey = StringDefines.AnyParameterSelectorKey)]
+        // [ConfigSelector(ParamsSetKey = StringDefines.AnyParameterSelectorKey)]
         public string id;
 
         //Initial value/ one-time increment.

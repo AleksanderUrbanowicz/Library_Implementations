@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 ﻿
 using BaseLibrary.StateMachine;
+=======
+﻿using StateMachine;
+>>>>>>> c9ba4eee2bb0003d065fab31f73635b3946267d4
 using System;
 using UnityEngine;
-namespace Data
+namespace GeneralImplementations.Data
 {
     [Serializable]
     [CreateAssetMenu(fileName = "RaycastData_", menuName = "ScriptableSystems/Helpers/Raycast Data Asset")]

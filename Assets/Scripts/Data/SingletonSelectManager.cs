@@ -1,14 +1,14 @@
 ﻿
 using UnityEngine;
-using Data;
 using BaseLibrary.Managers;
+using GeneralImplementations.Data;
 
-namespace Managers
+namespace GeneralImplementations.Managers
 {
     [CreateAssetMenu(fileName = "Manager_Select", menuName = "Managers/ Singleton Select Manager")]
-    public class SingletonSelectManager : ScriptableSingleton<SingletonSelectManager> 
+    public class SingletonSelectManager : ScriptableSingleton<SingletonSelectManager>
     {
-      //  public RaycastExecutor raycastExecutor;
+        //  public RaycastExecutor raycastExecutor;
         public RaycastData raycastData;
         //  public BoolEventListener hitMissListeners;
         public int n = 3;
@@ -17,7 +17,7 @@ namespace Managers
 
         public void Init()
         {
-            Debug.Log(GetType().Name + " Init."+ SingletonSelectManager.Instance.name);
+            Debug.Log(GetType().Name + " Init." + SingletonSelectManager.Instance.name);
             n++;
         }
 
@@ -32,13 +32,13 @@ namespace Managers
 
         public void InitEventListeners()
         {
-           // hitMissListeners = new BoolEventListener("SelectManagerHit", _MonoBehaviour.gameObject.transform, raycastData.hitMissEvents.scriptableEventTrue, HandleFocusHit, raycastData.hitMissEvents.scriptableEventFalse, HandleFocusMiss);
+            // hitMissListeners = new BoolEventListener("SelectManagerHit", _MonoBehaviour.gameObject.transform, raycastData.hitMissEvents.scriptableEventTrue, HandleFocusHit, raycastData.hitMissEvents.scriptableEventFalse, HandleFocusMiss);
 
         }
 
         public void InitRaycaster()
         {
-     
+
 
         }
 
@@ -57,7 +57,7 @@ namespace Managers
 
 
         }
-        
+
 
     }
 }
