@@ -1,1 +1,4 @@
 
+[submodule "Submodules/ScriptableObjectsLibrary"]
+	path = Submodules/ScriptableObjectsLibrary
+	url = https://github.com/AleksanderUrbanowicz/ScriptableObjectsLibrary
