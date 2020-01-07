@@ -7,7 +7,7 @@ public class Scripts : IExecutor
 {
     public void Execute()
     {
-        throw new System.NotImplementedException();
+        
     }
 
 }
