@@ -59,5 +59,5 @@ sysinfo.txt
 crashlytics-build.properties
 
 # Submodules (symlinks)
-Plugins/
-Plugins.meta
+/[Aa]ssets/Plugins/
+/[Aa]ssets/Plugins.meta
