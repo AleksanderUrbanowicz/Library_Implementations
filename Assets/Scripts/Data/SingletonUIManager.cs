@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UI;
 using System.Linq;
 using BaseLibrary.Managers;
+using BaseLibrary.UI;
 
 namespace GeneralImplementations.Managers
 {
@@ -15,9 +14,9 @@ namespace GeneralImplementations.Managers
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void BeforeSceneLoad() { CreateSingletonInstance(); }
 
-        public UI.PluggableUIData currentPluggableUI;
-        public UI.PluggableUIData overridePluggableUI;
-        public List<UI.PluggableUIData> pluggableUIs;
+        public PluggableUIData currentPluggableUI;
+        public PluggableUIData overridePluggableUI;
+        public List<PluggableUIData> pluggableUIs;
         public List<ScriptableObject> ipluggableUIs;
 
         [Header("Color defines")]

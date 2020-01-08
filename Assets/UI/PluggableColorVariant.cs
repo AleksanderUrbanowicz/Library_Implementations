@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UI;
+﻿using BaseLibrary.UI;
+using System;
 using UnityEngine;
 
-namespace UI
+namespace GeneralImplementations.UI
 {
     [CreateAssetMenu(fileName = "Pluggable_ColorVariant_", menuName = "UI/Scriptable Enums/ColorVariant")]
 

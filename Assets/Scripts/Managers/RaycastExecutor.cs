@@ -1,8 +1,8 @@
 ﻿
 using UnityEngine;
 using BaseLibrary.Managers;
-using Data;
 using BaseLibrary.StateMachine;
+using GeneralImplementations.Data;
 
 namespace GeneralImplementations.Managers
 {

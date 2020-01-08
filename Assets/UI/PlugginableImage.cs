@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using BaseLibrary.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI {
+namespace GeneralImplementations.UI
+{
     [RequireComponent(typeof(Image))]
 
-    
+
     public class PlugginableImage : PluggableUIElement, IPlugginableUI
     {
         [PluggableAssetSelector(AssetTypeKey = "Color")]
@@ -15,16 +14,16 @@ namespace UI {
         [PluggableAssetSelector(AssetTypeKey = "Sprite")]
         public string spriteId;
 
-      
+
         public Image image;
 
         public Image Image { get => image != null ? image : GetComponent<Image>(); }
 
-        public override  void Awake()
+        public override void Awake()
         {
             // themeData = ThemeData;
             base.Awake();
-          
+
         }
         public override void Update()
         {
@@ -35,7 +34,7 @@ namespace UI {
 
         public void SetImageColor()
         {
-          Image.color=  ThemeData.GetColor(colorId);
+            Image.color = ThemeData.GetColor(colorId);
 
         }
 

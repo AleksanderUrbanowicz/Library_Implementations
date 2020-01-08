@@ -1,9 +1,7 @@
-<<<<<<< HEAD
+
 ﻿
 using BaseLibrary.StateMachine;
-=======
-﻿using StateMachine;
->>>>>>> c9ba4eee2bb0003d065fab31f73635b3946267d4
+
 using System;
 using UnityEngine;
 namespace GeneralImplementations.Data
