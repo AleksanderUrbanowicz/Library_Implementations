@@ -6,7 +6,7 @@ namespace GeneralImplementations.Managers
 {
     public interface IPreviewExecutor : IUpdateExecutor
     {
-        void Init(PreviewData previewData, ISpawnableBuildObject spawnable);
+        void Init( ISpawnableBuildObject spawnable);
 
         void SetPreview(ISpawnableBuildObject spawnable);
 

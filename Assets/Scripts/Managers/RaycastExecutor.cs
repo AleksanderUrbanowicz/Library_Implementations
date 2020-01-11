@@ -2,56 +2,39 @@
 using BaseLibrary.Managers;
 using BaseLibrary.StateMachine;
 using GeneralImplementations.Data;
+using Managers;
 using System;
 using UnityEngine;
 
 namespace GeneralImplementations.Managers
 {
-    public class RaycastExecutor : MonoBehaviour, IRaycastExecutor
+    public class RaycastExecutor : UpdateExecutorBase, IRaycastExecutor
     {
-        public bool isRaycasting;
-        private int counter = 0;
-        //[SerializeField]
-        //private RaycastExecutorData raycastExecutorData;
-        public bool boolOutput;
+       // public bool isRaycasting;
+       // private int counter = 0;
+       // public bool boolOutput;
+        public float mainAxisLength = 15.0f;
 
-        public Vector3 collisionNormal;
-
-        public RaycastHit raycastHitOutput;
+       
+        //private Vector3 cornerAxisVector = new Vector3(-5, 0, -5);
+        //public Vector3 collisionNormal;
+        private BuildManagerMonoBehaviourHookup monoBehaviourHookup;
         public LayerMask layersToCheck;
         public Transform targetFrom;
         public RaycastData raycastdata;
         public BoolEventListener hitMissListeners;
         public void Init(RaycastData _raycastdata)
         {
-            isRaycasting = false;
+            isExecuting = false;
             raycastdata = _raycastdata;
             if (targetFrom == null)
             {
                 targetFrom = GameObject.FindGameObjectWithTag(raycastdata.targetTag).transform;
             }
             layersToCheck = raycastdata.defaultLayerToScan;
-            //RaycastExecutorData = _raycastExecutorData;
-
-             //raycastdata.hitMissEvents = new BoolEventGroup(raycastdata.hitMissEvents.scriptableEventTrue, raycastdata.hitMissEvents.scriptableEventFalse);
-            //InitEventListeners(_raycastdata);
+            
         }
-        /*
-        public void InitEventListeners(RaycastData _raycastdata)
-        {
-            hitMissListeners = new BoolEventListener("Buildycast", transform, _raycastdata.hitMissEvents.scriptableEventTrue, HandleHit, _raycastdata.hitMissEvents.scriptableEventFalse, HandleMiss);
-
-        }
-        private void HandleHit()
-        {
-            Debug.LogError("HandleHit");
-           // SingletonBuildManager.
-        }
-        private void HandleMiss()
-        {
-            Debug.LogError("HandleMiss");
-        }
-        */
+        
         public void Update()
         {
             if (raycastdata == null)
@@ -97,20 +80,11 @@ namespace GeneralImplementations.Managers
                 raycastdata.hitMissEvents.scriptableEventFalse.Raise();
             }
         }
-        public void StartExecute()
-        {
-            isRaycasting = true;
-            Debug.LogError("StartRaycastExecute");
-        }
-        public void StopExecute()
-        {
-            isRaycasting = false;
-            Debug.LogError("StopRaycastExecute");
-        }
-        public void Execute()
+  
+        public new void Execute()
         {
            // Debug.Log("Execute");
-            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
+            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out MonoBehaviourHookup.raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
             {
 
                 SendEvent();
@@ -120,41 +94,53 @@ namespace GeneralImplementations.Managers
 
 
         }
-       // public RaycastExecutorData GetExecutorData()
-      //  {
-         //   return RaycastExecutorData;
-       // }
-        bool IUpdateExecutor.CheckUpdateConditions
+      
+     
+        
+
+        public RaycastHit RaycastHitOutput { get => MonoBehaviourHookup.RaycastHitOutput; set => MonoBehaviourHookup.RaycastHitOutput = value; }
+        public BuildManagerMonoBehaviourHookup MonoBehaviourHookup { get {
+                monoBehaviourHookup = monoBehaviourHookup == null ? monoBehaviourHookup = GetComponent<BuildManagerMonoBehaviourHookup>() : monoBehaviourHookup;
+                return monoBehaviourHookup; } set => monoBehaviourHookup = value; }
+
+
+        void OnDrawGizmos()
         {
-            get
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(SingletonBuildManager.Instance.BuildPreviewExecutor.PreviewObject.transform.position, 0.04f);
+            Gizmos.color = Color.grey;
+            Gizmos.DrawSphere(RaycastHitOutput.point, 0.02f);
+
+            Gizmos.DrawLine(RaycastHitOutput.point, RaycastHitOutput.point + RaycastHitOutput.normal);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(SingletonBuildManager.Instance.gizmosData.cornerAxisVector, SingletonBuildManager.Instance.gizmosData.cornerAxisVector + Vector3.right * mainAxisLength);
+
+            bool b = MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position != null;
+          
+            if (b)
             {
-                if (raycastdata.raycastInterval == 0)
-                {
-                    return true;
 
-                }
+                Gizmos.DrawLine(MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position, MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position + Vector3.right * 1.5f);
 
-                counter++;
-                if (counter > raycastdata.raycastInterval)
-                {
 
-                    counter = 0;
-                    //  Debug.Log("Update");
-                    return true;
-                }
-                //  Debug.Log("SkipUpdate");
-                return false;
+
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(SingletonBuildManager.Instance.gizmosData.cornerAxisVector, SingletonBuildManager.Instance.gizmosData.cornerAxisVector + Vector3.up * mainAxisLength);
+
+
+                Gizmos.DrawLine(MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position, MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position + Vector3.up * 1.5f);
+
+                Gizmos.color = Color.blue;
+
+
+
+                Gizmos.DrawLine(MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position, MonoBehaviourHookup.buildPreviewExecutor.PreviewObject.transform.position + Vector3.forward * 1.5f);
             }
+            Gizmos.DrawLine(SingletonBuildManager.Instance.gizmosData.cornerAxisVector, SingletonBuildManager.Instance.gizmosData.cornerAxisVector + Vector3.forward * mainAxisLength);
+          
+
+            
+
         }
-        public bool CheckPreConditions
-        {
-            get
-            {
-                return isRaycasting;
-            }
-        }
-        public bool IsExecuting => IsExecuting;
-       // public RaycastExecutorData RaycastExecutorData { get => raycastExecutorData; set => raycastExecutorData = value; }
-       
     }
 }

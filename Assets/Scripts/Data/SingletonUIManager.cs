@@ -8,7 +8,7 @@ namespace GeneralImplementations.Managers
 {
     [CreateAssetMenu(fileName = "Manager_UI", menuName = "Managers/ Singleton UI Manager")]
 
-    public class SingletonUIManager : ScriptableSingleton<SingletonUIManager>
+    public class SingletonUIManager : ScriptableSingleton<SingletonUIManager, MonoBehaviourHookup>
     {
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

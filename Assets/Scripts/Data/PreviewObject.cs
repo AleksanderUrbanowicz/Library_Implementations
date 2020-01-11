@@ -10,7 +10,7 @@ namespace GeneralImplementations.Data
     public class PreviewObject : MonoBehaviour
     {
         private Data.ISpawnableBuildObject spawnable;
-        private PreviewData previewData;
+        public PreviewData previewData;
         private BoxCollider previewCollider;
         private MeshRenderer previewRenderer;
         public float userRotationF;
@@ -24,8 +24,7 @@ namespace GeneralImplementations.Data
             Debug.Log("SetPreviewObject");
             spawnable = _spawnableBuildObject;
             previewData = _previewData;
-            //(spawnableBuildObject as ISpawnable).CreateInstance(transform, Vector3.zero, Quaternion.identity, SpawnableBuildObject);
-            //AddPreviewCollider();
+       
               AddPreviewMesh();
 
         }

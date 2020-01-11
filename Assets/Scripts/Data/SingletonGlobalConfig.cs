@@ -5,7 +5,7 @@ using UnityEngine;
 namespace GeneralImplementations.Data
 {
     [CreateAssetMenu(fileName = "Config_Global", menuName = "Config/Singleton Global Config")]
-    public class SingletonGlobalConfig : ScriptableSingleton<SingletonGlobalConfig>
+    public class SingletonGlobalConfig : ScriptableSingleton<SingletonGlobalConfig, MonoBehaviourHookup>
     {
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
