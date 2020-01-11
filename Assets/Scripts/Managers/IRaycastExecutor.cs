@@ -1,5 +1,6 @@
 ﻿using BaseLibrary.Managers;
 using GeneralImplementations.Data;
+using UnityEngine;
 
 namespace GeneralImplementations.Managers
 {
@@ -7,6 +8,8 @@ namespace GeneralImplementations.Managers
     {
         void Init(RaycastData raycastData);
 
-       // RaycastExecutorData GetExecutorData();
+        RaycastHit GetRaycastHit();
+
+        Vector3 GetPoint();
     }
 }

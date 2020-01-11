@@ -15,7 +15,7 @@ namespace GeneralImplementations.Data
         [Tooltip("Events to notify when preview object is available<->inavailable to build")]
         public BoolEventGroup buildAvailableEvents = new BoolEventGroup();
         [Tooltip("Number of Updates to skip  per one executed")]
-        public int displayInterval;
+        //public int displayInterval;
         public float offset = 1.0f;
         public float gridSize = 1.0f;
         public float previewSnapFactor = 1.0f;

@@ -1,6 +1,5 @@
 ﻿using BaseLibrary.StateMachine;
-using System.Collections;
-using System.Collections.Generic;
+using Managers;
 using UnityEngine;
 
 namespace BaseLibrary.Managers
@@ -13,6 +12,17 @@ namespace BaseLibrary.Managers
         public int interval;
         public bool boolOutput;
         public BoolEventListener hitMissListeners;
+        public BuildManagerMonoBehaviourHookup monoBehaviourHookup;
+        public BuildManagerMonoBehaviourHookup MonoBehaviourHookup
+        {
+            get
+            {
+                monoBehaviourHookup = monoBehaviourHookup == null ? monoBehaviourHookup = GetComponent<BuildManagerMonoBehaviourHookup>() : monoBehaviourHookup;
+                return monoBehaviourHookup;
+            }
+            set => monoBehaviourHookup = value;
+        }
+
         public bool IsExecuting
         {
             get
@@ -26,14 +36,15 @@ namespace BaseLibrary.Managers
         }
 
 
-        public void Update()
+
+        public virtual void Update()
         {
 
             if (!CheckPreConditions)
             {
                 return;
             }
-            
+
 
             if ((this as IUpdateExecutor).CheckUpdateConditions)
             {
@@ -44,18 +55,18 @@ namespace BaseLibrary.Managers
 
         }
 
-        public void StartExecute()
+        public virtual void StartExecute()
         {
             IsExecuting = true;
         }
-        public void StopExecute()
+        public virtual void StopExecute()
         {
             IsExecuting = false;
         }
 
         public virtual void Execute()
         {
-          
+
         }
 
         public bool CheckUpdateConditions

@@ -1,17 +1,15 @@
 ﻿using BaseLibrary.Managers;
 using GeneralImplementations.Data;
 using GeneralImplementations.Managers;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Managers
 {
     public class BuildManagerMonoBehaviourHookup : MonoBehaviourHookup
     {
-        public RaycastExecutor buildSystemRaycast;
-        public BuildPreviewExecutor buildPreviewExecutor;
-        public PreviewObject previewObject;
+        private RaycastExecutor buildSystemRaycast;
+        private BuildPreviewExecutor buildPreviewExecutor;
+     
         public RaycastHit raycastHitOutput;
 
         public RaycastHit RaycastHitOutput
@@ -19,14 +17,20 @@ namespace Managers
             get { return raycastHitOutput; }
             set
             {
-                Debug.Log("RaycastHitOutput.Set: "+value.point);
+                Debug.Log("RaycastHitOutput.Set: " + value.point);
                 raycastHitOutput = value;
             }
         }
 
+        public RaycastExecutor BuildSystemRaycast { get => buildSystemRaycast; set => buildSystemRaycast = value; }
+        public BuildPreviewExecutor BuildPreviewExecutor { get => buildPreviewExecutor; set => buildPreviewExecutor = value; }
+        public PreviewObject PreviewObject { get { 
+              
+                return BuildPreviewExecutor.PreviewObject; } set => BuildPreviewExecutor.PreviewObject = value; }
+
         private void OnGUI()
         {
-            if(SingletonBuildManager.Instance.IsManagerActive)
+            if (SingletonBuildManager.Instance.IsManagerActive)
             {
                 GUI.color = Color.green;
 
@@ -36,9 +40,9 @@ namespace Managers
                 GUI.color = Color.red;
             }
 
-            GUI.Toggle(new Rect(Vector2.one , Vector2.one * 150), SingletonBuildManager.Instance.IsManagerActive, "BuildManager");
+            GUI.Toggle(new Rect(Vector2.one, Vector2.one * 150), SingletonBuildManager.Instance.IsManagerActive, "BuildManager");
 
-            if (buildPreviewExecutor.IsExecuting)
+            if (BuildPreviewExecutor.IsExecuting)
             {
                 GUI.color = Color.green;
 
@@ -48,9 +52,9 @@ namespace Managers
                 GUI.color = Color.red;
             }
 
-            GUI.Toggle(new Rect(Vector2.up * 60, Vector2.one * 150), buildPreviewExecutor.IsExecuting, "buildPreviewExecutor");
+            GUI.Toggle(new Rect(Vector2.up * 60, Vector2.one * 150), BuildPreviewExecutor.IsExecuting, "buildPreviewExecutor");
 
-            if (buildSystemRaycast.IsExecuting)
+            if (BuildSystemRaycast.IsExecuting)
             {
                 GUI.color = Color.green;
 
@@ -59,7 +63,7 @@ namespace Managers
             {
                 GUI.color = Color.red;
             }
-            GUI.Toggle(new Rect(Vector2.up* 120, Vector2.one * 150), buildSystemRaycast.IsExecuting, "buildSystemRaycast");
+            GUI.Toggle(new Rect(Vector2.up * 120, Vector2.one * 150), BuildSystemRaycast.IsExecuting, "buildSystemRaycast");
 
             if (GUI.Button(new Rect(Vector2.up * 220, Vector2.one * 90), "Next"))
             {

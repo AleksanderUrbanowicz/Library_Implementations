@@ -1,7 +1,5 @@
-﻿using BaseLibrary.Managers;
+﻿using Managers;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace GeneralImplementations.Data
@@ -10,22 +8,20 @@ namespace GeneralImplementations.Data
     public class PreviewObject : MonoBehaviour
     {
         private Data.ISpawnableBuildObject spawnable;
-        public PreviewData previewData;
+        
         private BoxCollider previewCollider;
         private MeshRenderer previewRenderer;
         public float userRotationF;
-        public PreviewObject(ISpawnableBuildObject spawnableBuildObject, PreviewData _previewData)
+        public PreviewObject(ISpawnableBuildObject spawnableBuildObject)
         {
             this.spawnable = spawnableBuildObject;
-            previewData = _previewData;
         }
-        public void SetPreviewObject(ISpawnableBuildObject _spawnableBuildObject, PreviewData _previewData)
+        public void SetPreviewObject(ISpawnableBuildObject _spawnableBuildObject )
         {
             Debug.Log("SetPreviewObject");
             spawnable = _spawnableBuildObject;
-            previewData = _previewData;
-       
-              AddPreviewMesh();
+
+            AddPreviewMesh();
 
         }
 
@@ -55,7 +51,7 @@ namespace GeneralImplementations.Data
 
             }
             previewRenderer = cube.gameObject.GetComponent<MeshRenderer>();
-            previewRenderer.material = previewData.previewMaterial;
+            previewRenderer.material = SingletonBuildManager.Instance.previewData.previewMaterial;
             previewCollider = cube.GetComponent<BoxCollider>();
             previewCollider.isTrigger = true;
 
