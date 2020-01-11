@@ -11,7 +11,7 @@ namespace GeneralImplementations.Data
 
     public class RaycastData : ScriptableObject
     {
-        public string layerString;
+        //public string layerString;
         public LayerMask defaultLayerToScan;
         public string targetTag;
 

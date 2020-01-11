@@ -6,17 +6,16 @@ using GeneralImplementations.Data;
 
 namespace GeneralImplementations.Managers
 {
-    public class RaycastExecutor : MonoBehaviour, IUpdateExecutor
+    public class RaycastExecutor : MonoBehaviour, IRaycastExecutor
     {
 
         public bool isRaycasting;
-        //public bool boolOutput;
         private int counter = 0;
-        public RaycastExecutorData raycastExecutorData;
-        //public Vector3 collisionNormal;
+        private RaycastExecutorData raycastExecutorData;
+        
         public LayerMask layersToCheck;
         public Transform targetFrom;
-        // public RaycastHit raycastHitOutput;
+       
         public RaycastData raycastdata;
         public void Init(RaycastData _raycastdata)
         {
@@ -24,10 +23,10 @@ namespace GeneralImplementations.Managers
             raycastdata = _raycastdata;
             if (targetFrom == null)
             {
-                targetFrom = GameObject.FindGameObjectWithTag("MainCamera").transform;
+                targetFrom = GameObject.FindGameObjectWithTag(raycastdata.targetTag).transform;
             }
 
-
+            raycastExecutorData = new RaycastExecutorData();
             raycastdata.hitMissEvents = new BoolEventGroup(raycastdata.hitMissEvents.scriptableEventTrue, raycastdata.hitMissEvents.scriptableEventFalse);
 
         }
@@ -107,6 +106,13 @@ namespace GeneralImplementations.Managers
 
         }
 
+     
+
+        public RaycastExecutorData GetExecutorData()
+        {
+            return raycastExecutorData;
+        }
+
         bool IUpdateExecutor.CheckUpdateConditions
         {
             get
@@ -129,21 +135,7 @@ namespace GeneralImplementations.Managers
                 return false;
             }
         }
-        /*
-        bool IConditionalExecutor.CheckEventConditions
-        {
-            get
-            {
-                if (isRaycasting && boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
-                {
-
-                    return true;
-
-                }
-                return false;
-            }
-        }
-        */
+ 
 
         public bool CheckPreConditions
         {
