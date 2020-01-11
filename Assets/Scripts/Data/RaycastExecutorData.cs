@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace GeneralImplementations.Data
 {
+    [Serializable]
     public class RaycastExecutorData
     {
 
@@ -11,5 +13,9 @@ namespace GeneralImplementations.Data
 
         public RaycastHit raycastHitOutput;
 
+        public RaycastExecutorData()
+        {
+            this.raycastHitOutput = new RaycastHit();
+        }
     }
 }

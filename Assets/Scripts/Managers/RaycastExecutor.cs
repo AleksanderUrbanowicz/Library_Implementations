@@ -1,22 +1,27 @@
 ﻿
-using UnityEngine;
 using BaseLibrary.Managers;
 using BaseLibrary.StateMachine;
 using GeneralImplementations.Data;
+using System;
+using UnityEngine;
 
 namespace GeneralImplementations.Managers
 {
     public class RaycastExecutor : MonoBehaviour, IRaycastExecutor
     {
-
         public bool isRaycasting;
         private int counter = 0;
-        private RaycastExecutorData raycastExecutorData;
-        
+        //[SerializeField]
+        //private RaycastExecutorData raycastExecutorData;
+        public bool boolOutput;
+
+        public Vector3 collisionNormal;
+
+        public RaycastHit raycastHitOutput;
         public LayerMask layersToCheck;
         public Transform targetFrom;
-       
         public RaycastData raycastdata;
+        public BoolEventListener hitMissListeners;
         public void Init(RaycastData _raycastdata)
         {
             isRaycasting = false;
@@ -25,12 +30,28 @@ namespace GeneralImplementations.Managers
             {
                 targetFrom = GameObject.FindGameObjectWithTag(raycastdata.targetTag).transform;
             }
+            layersToCheck = raycastdata.defaultLayerToScan;
+            //RaycastExecutorData = _raycastExecutorData;
 
-            raycastExecutorData = new RaycastExecutorData();
-            raycastdata.hitMissEvents = new BoolEventGroup(raycastdata.hitMissEvents.scriptableEventTrue, raycastdata.hitMissEvents.scriptableEventFalse);
+             //raycastdata.hitMissEvents = new BoolEventGroup(raycastdata.hitMissEvents.scriptableEventTrue, raycastdata.hitMissEvents.scriptableEventFalse);
+            //InitEventListeners(_raycastdata);
+        }
+        /*
+        public void InitEventListeners(RaycastData _raycastdata)
+        {
+            hitMissListeners = new BoolEventListener("Buildycast", transform, _raycastdata.hitMissEvents.scriptableEventTrue, HandleHit, _raycastdata.hitMissEvents.scriptableEventFalse, HandleMiss);
 
         }
-
+        private void HandleHit()
+        {
+            Debug.LogError("HandleHit");
+           // SingletonBuildManager.
+        }
+        private void HandleMiss()
+        {
+            Debug.LogError("HandleMiss");
+        }
+        */
         public void Update()
         {
             if (raycastdata == null)
@@ -52,21 +73,17 @@ namespace GeneralImplementations.Managers
             }
 
         }
-
-
         public void StartExecute(LayerMask _layersToCheck)
         {
             layersToCheck = _layersToCheck;
             StartExecute();
 
         }
-
-
         public void SendEvent()
         {
 
-            raycastExecutorData.boolOutput = !raycastExecutorData.boolOutput;
-            if (raycastExecutorData.boolOutput)
+            boolOutput = !boolOutput;
+            if (boolOutput)
             {
                 if (raycastdata.stopAfterHit)
                 {
@@ -80,22 +97,20 @@ namespace GeneralImplementations.Managers
                 raycastdata.hitMissEvents.scriptableEventFalse.Raise();
             }
         }
-
-        #region Interface implementations
-
         public void StartExecute()
         {
             isRaycasting = true;
+            Debug.LogError("StartRaycastExecute");
         }
-
         public void StopExecute()
         {
             isRaycasting = false;
+            Debug.LogError("StopRaycastExecute");
         }
-
         public void Execute()
         {
-            if (raycastExecutorData.boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out raycastExecutorData.raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
+           // Debug.Log("Execute");
+            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
             {
 
                 SendEvent();
@@ -105,14 +120,10 @@ namespace GeneralImplementations.Managers
 
 
         }
-
-     
-
-        public RaycastExecutorData GetExecutorData()
-        {
-            return raycastExecutorData;
-        }
-
+       // public RaycastExecutorData GetExecutorData()
+      //  {
+         //   return RaycastExecutorData;
+       // }
         bool IUpdateExecutor.CheckUpdateConditions
         {
             get
@@ -135,8 +146,6 @@ namespace GeneralImplementations.Managers
                 return false;
             }
         }
- 
-
         public bool CheckPreConditions
         {
             get
@@ -144,9 +153,8 @@ namespace GeneralImplementations.Managers
                 return isRaycasting;
             }
         }
-
-
-
-        #endregion Interface implementations
+        public bool IsExecuting => IsExecuting;
+       // public RaycastExecutorData RaycastExecutorData { get => raycastExecutorData; set => raycastExecutorData = value; }
+       
     }
 }

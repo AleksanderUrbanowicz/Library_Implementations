@@ -1,33 +1,103 @@
 ﻿using BaseLibrary.Managers;
 using BaseLibrary.StateMachine;
-using Data;
-using GeneralImplementations.Data;
 
-using System.Collections;
-using System.Collections.Generic;
+using GeneralImplementations.Data;
+using GeneralImplementations.Managers;
+using System;
 using UnityEngine;
 
-namespace GeneralImplementations.Managers
+namespace Managers
 {
     public class BuildPreviewExecutor : MonoBehaviour, IPreviewExecutor
     {
-        public bool isPreviewActive;
         private int counter = 0;
-        public float userRotationF;
-
-        private GameObject previewGameObject;
-        private Transform previewTransform;
-        private Vector3 collisionNormal;
-        private Vector3 currentPosition = Vector3.zero;
-        private Quaternion rotation;
-        private BoxCollider previewCollider;
-        private MeshRenderer previewRenderer;
-
-        private ISpawnableBuildObject spawnable;
+        private RaycastExecutorData raycastExecutorData;
         private PreviewData previewData;
         private Spawner previewSpawner;
-        private RaycastExecutorData raycastExecutorData;
-        private RaycastHit raycastHit;
+        public BoolEventListener previewAvailableListeners;
+        private PreviewObject previewObject;
+        private bool isPreviewAvailable;
+
+        public PreviewObject PreviewObject { get { 
+                
+                return previewObject; } }
+        public Transform PreviewTransform { get { return PreviewObject.transform; } }
+        public GameObject PreviewGameObject { get { return PreviewObject.gameObject; }  }
+        public Vector3 PreviewPosition { get => PreviewObject.transform.position; set => PreviewTransform.position = value; }
+        //public Quaternion PreviewRotation { get => PreviewObject.transform.rotation; set => PreviewTransform.rotation = value; }
+        public Spawner PreviewSpawner { get => previewSpawner = previewSpawner == null ? new Spawner() : previewSpawner; set => previewSpawner = value; }
+
+        public void Init(PreviewData _previewData, ISpawnableBuildObject _spawnableBuildObject)
+        {
+            IsExecuting = false;
+            previewData = _previewData;
+            //RaycastExecutorData = _raycastExecutorData;
+            
+            InitEventListeners(previewData);
+            //previewSpawner = new Spawner();
+            SetPreview(_spawnableBuildObject);
+        }
+
+        public void InitEventListeners(PreviewData _previewData)
+        {
+            previewAvailableListeners = new BoolEventListener("BuildPreviewAvailable", transform, previewData.buildAvailableEvents.scriptableEventTrue, HandlePreviewAvailable, previewData.buildAvailableEvents.scriptableEventFalse, HandlePreviewUnavailable);
+
+        }
+
+        private void HandlePreviewUnavailable()
+        {
+            IsPreviewAvailable = false;
+             SetPreviewColor(false);
+
+        }
+
+        private void HandlePreviewAvailable()
+        {
+            IsPreviewAvailable = true;
+            SetPreviewColor(true);
+        }
+
+        public void SetPreview(ISpawnableBuildObject _spawnable)
+        {
+           // PreviewObject.SpawnableBuildObject = _spawnable;
+            if (PreviewObject != null)
+            {
+                Destroy(PreviewObject.gameObject);
+            }
+           // PreviewObject = new PreviewObject(_spawnableBuildObject);
+            //PreviewObject = new PreviewObject(_spawnable);
+            previewObject = PreviewSpawner.CreateInstance(transform, Vector3.zero, Quaternion.identity, _spawnable).AddComponent<PreviewObject>();
+            PreviewObject.SetPreviewObject(_spawnable, previewData);
+
+            TooglePreviewGameObject(false);
+        }
+
+        public void SetPreviewColor(bool b)
+        {
+            PreviewObject.PreviewRenderer.material.color = b ? previewData.availableColor : previewData.unavailableColor;
+        }
+
+        public void Update()
+        {
+          
+            if (!CheckPreConditions)
+            {
+                return;
+            }
+            if (PreviewObject.SpawnableBuildObject == null)
+            {
+                Debug.Log("spawnable==null");
+                return;
+            }
+
+            if ((this as IUpdateExecutor).CheckUpdateConditions)
+            {
+
+                Execute();
+
+            }
+
+        }
 
         public bool CheckUpdateConditions
         {
@@ -56,200 +126,147 @@ namespace GeneralImplementations.Managers
         {
             get
             {
-                return isPreviewActive;
+                return IsExecuting;
             }
         }
 
-        public Transform PreviewTransform { get { return PreviewGameObject.transform; }  }
+        public bool IsPreviewAvailable { get { 
+                if(isPreviewAvailable!= CheckAvailability())
+                {
+                    isPreviewAvailable = !isPreviewAvailable;
+                    SendEvent();
+                }
+                return isPreviewAvailable; } set => isPreviewAvailable = value; }
 
-        public GameObject PreviewGameObject { get { return previewGameObject; } set => previewGameObject = value; }
-
-        public void Init(PreviewData _previewData, ISpawnableBuildObject _spawnableBuildObject)
-        {
-            isPreviewActive = false;
-            previewData = _previewData;
-            previewData.buildAvailableEvents = new BoolEventGroup(previewData.buildAvailableEvents.scriptableEventTrue, previewData.buildAvailableEvents.scriptableEventFalse);
-            spawnable = _spawnableBuildObject;
-            previewSpawner = new Spawner();
-            SetPreview(_spawnableBuildObject);
-        }
-
-        public void SetPreview(ISpawnableBuildObject _spawnable)
-        {
-            spawnable = _spawnable;
-            if (PreviewGameObject != null)
-            {
-                Destroy(PreviewGameObject);
-
-
-            }
-            PreviewGameObject = previewSpawner.CreateInstance(transform, Vector3.zero, Quaternion.identity, spawnable);
-            //AddPreviewCollider();
-            AddPreviewMesh();
-
-            TooglePreviewGameObject(false);
-        }
-
-        public void Update()
-        {
-            if (spawnable == null)
-            {
-                Debug.Log("spawnable==null");
-                return;
-            }
-            if (!CheckPreConditions)
-            {
-                return;
-            }
-
-
-            if ((this as IUpdateExecutor).CheckUpdateConditions)
-            {
-                
-                Execute();
-
-            }
-
-        }
+        public bool IsExecuting { get; private set; }
+        public RaycastExecutorData RaycastExecutorData { get => raycastExecutorData; set => raycastExecutorData = value; }
 
         public void Execute()
         {
-            if (CheckRaycastDelta(raycastExecutorData.raycastHitOutput.point, raycastExecutorData.collisionNormal))
+            Debug.LogError("PreviewExecute");
+           // SingletonBuildManager.
+            if (CheckRaycastDelta(RaycastExecutorData.raycastHitOutput.point, RaycastExecutorData.collisionNormal))
             {
-                DisplayPreview(raycastExecutorData.raycastHitOutput.point, raycastExecutorData.collisionNormal);
+                DisplayPreview(RaycastExecutorData.raycastHitOutput.point, RaycastExecutorData.collisionNormal);
 
             }
         }
 
         public void DisplayPreview(Vector3 _point, Vector3 _normal)
         {
-
-          
-                MapPreviewToGrid(_point, _normal);
-            //CheckAvailability();
-            
-
-
+            Debug.LogError("DisplayPreview");
+            MapPreviewToGrid(_point, _normal);
             
         }
 
         public bool CheckRaycastDelta(Vector3 _point, Vector3 _normal)
         {
-            if (raycastHit.point == _point || PreviewGameObject == null)
+            Debug.LogError("CheckRaycastDelta");
+
+            if (RaycastExecutorData.raycastHitOutput.point == _point || PreviewObject == null)
             {
                 return false;
             }
 
 
-            float distance = Vector3.Distance(currentPosition, _point);
+            float distance = Vector3.Distance(PreviewPosition, _point);
             if (distance > previewData.previewSnapFactor * previewData.gridSize)
             {
 
                 return true;
-                //CheckObject();
+
             }
             return false;
         }
 
-        public void MapPreviewToGrid(Vector3 _point, Vector3 _normal, Vector3 orientationVector =  new Vector3())
+        public void MapPreviewToGrid(Vector3 _point, Vector3 _normal, Vector3 orientationVector = new Vector3())
         {
-            collisionNormal = _normal;
-            if(orientationVector==default(Vector3))
+            Debug.LogError("MapPreviewToGrid");
+            Quaternion Rotation;
+            Vector3 CurrentPosition;
+            // collisionNormal = _normal;
+            if (orientationVector == default)
             {
                 orientationVector.y = 1.0f;
 
             }
-            rotation = Quaternion.FromToRotation(orientationVector, collisionNormal);
-            rotation *= Quaternion.Euler(orientationVector * userRotationF);
+            Rotation = Quaternion.FromToRotation(orientationVector, _normal);
+            Rotation *= Quaternion.Euler(orientationVector * PreviewObject.userRotationF);
 
-            currentPosition = _point;
-            currentPosition -= Vector3.one * previewData.offset;
-            currentPosition /= previewData.gridSize;
-            currentPosition = new Vector3(Mathf.Round(currentPosition.x), Mathf.Round(currentPosition.y), Mathf.Round(currentPosition.z));
-            currentPosition *= previewData.gridSize;
-            currentPosition += Vector3.one * previewData.offset;
+            CurrentPosition = _point;
+            CurrentPosition -= Vector3.one * previewData.offset;
+            CurrentPosition /= previewData.gridSize;
+            CurrentPosition = new Vector3(Mathf.Round(CurrentPosition.x), Mathf.Round(CurrentPosition.y), Mathf.Round(CurrentPosition.z));
+            CurrentPosition *= previewData.gridSize;
+            CurrentPosition += Vector3.one * previewData.offset;
 
-            PreviewTransform.position = currentPosition;
+            PreviewTransform.position = CurrentPosition;
 
-            PreviewTransform.rotation = rotation;
+            PreviewTransform.rotation = Rotation;
         }
 
-
-
-        private void AddPreviewCollider()
+        public bool CheckAvailability()
         {
 
-            previewCollider = PreviewGameObject.AddComponent<BoxCollider>();
-            Vector3 gridSize = spawnable.GetGridSize;
-            Vector3 actualSize = spawnable.GetActualSize;
-            Vector3 orientation = spawnable.GetOrientation;
-            previewCollider.isTrigger = true;
-            if (orientation == Vector3.forward)
+            // collisionCenterDebug = PreviewTransform.position + PreviewObject.PreviewCollider.center;
+            Vector3 halfEx = PreviewObject.PreviewCollider.bounds.extents *0.9f;
+            Collider[] hitColliders = Physics.OverlapBox(PreviewTransform.position + PreviewObject.PreviewCollider.center, halfEx, PreviewObject.PreviewCollider.transform.rotation, PreviewObject.SpawnableBuildObject.GetObstacleLayerMask);
+            int i = 0;
+
+
+            while (i < hitColliders.Length)
             {
-                previewCollider.center = new Vector3(0, 0, -(gridSize.z / 2.0f) + actualSize.z);
+                Collider hitCollider = hitColliders[i];
 
+                if (hitCollider.gameObject != gameObject && hitCollider.gameObject.layer != PreviewObject.SpawnableBuildObject.GetBuildLayerMask) 
+                {
+                    
+                    return false;
+                }
 
+                i++;
             }
-            else if (orientation == Vector3.up)
-            {
 
-                previewCollider.center = new Vector3(0, gridSize.y / 2.0f, 0);
-
-            }
-            previewCollider.size = gridSize;
-            
+            return true;
 
         }
 
-        private void AddPreviewMesh()
-        {
-            Vector3 gridSize = spawnable.GetGridSize;
-            Vector3 actualSize = spawnable.GetActualSize;
-            Vector3 orientation = spawnable.GetOrientation;
-            Vector3 offset = spawnable.GetOffset;
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-
-            cube.transform.SetParent(PreviewTransform);
-
-            cube.transform.localScale = new Vector3(gridSize.x, gridSize.y, gridSize.z);
-            if (orientation == Vector3.forward)
-            {
-                cube.transform.localPosition = new Vector3(0, 0, -(gridSize.z / 2.0f) + actualSize.z);
-
-
-            }
-            else if (orientation == Vector3.up)
-            {
-
-                cube.transform.localPosition = new Vector3(0, actualSize.y / 2.0f, 0) + offset;
-
-            }
-            previewRenderer = cube.gameObject.GetComponent<MeshRenderer>();
-            previewRenderer.material = previewData.previewMaterial;
-            previewCollider = cube.GetComponent<BoxCollider>();
-            previewCollider.isTrigger = true;
-            
-        }
+        
 
         public void TooglePreviewGameObject(bool b)
         {
-            isPreviewActive = b;
-            previewGameObject.SetActive(b);
+            IsExecuting = b;
+            PreviewObject.gameObject.SetActive(b);
         }
 
         public void StartExecute()
         {
+            Debug.LogError("StartPreviewExecute");
             TooglePreviewGameObject(true);
         }
 
         public void StopExecute()
         {
+            Debug.LogError("StopPreviewExecute");
+
             TooglePreviewGameObject(false);
         }
 
-    
+        public void SendEvent()
+        {
 
-   
+            if (isPreviewAvailable)
+            {
+
+                previewData.buildAvailableEvents.scriptableEventTrue.Raise();
+            }
+            else
+            {
+                previewData.buildAvailableEvents.scriptableEventFalse.Raise();
+            }
+        }
+
+       
     }
 }

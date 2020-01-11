@@ -1,7 +1,7 @@
 ﻿using BaseLibrary.Managers;
 using UnityEngine;
 
-namespace Data
+namespace GeneralImplementations.Data
 {
     public interface ISpawnableBuildObject : ISpawnable
     {
@@ -12,5 +12,10 @@ namespace Data
         Vector3 GetActualSize { get; }
 
         Vector3 GetOffset { get; }
+
+        LayerMask GetObstacleLayerMask { get; }
+
+        LayerMask GetBuildLayerMask { get; }
+        ScriptableObject GetScriptableObject { get; }
     }
 }

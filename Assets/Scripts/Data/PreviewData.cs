@@ -1,7 +1,5 @@
 ﻿using BaseLibrary.StateMachine;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace GeneralImplementations.Data
@@ -15,7 +13,7 @@ namespace GeneralImplementations.Data
         public Material previewMaterial;
 
         [Tooltip("Events to notify when preview object is available<->inavailable to build")]
-        public BoolEventGroup buildAvailableEvents=new BoolEventGroup();
+        public BoolEventGroup buildAvailableEvents = new BoolEventGroup();
         [Tooltip("Number of Updates to skip  per one executed")]
         public int displayInterval;
         public float offset = 1.0f;

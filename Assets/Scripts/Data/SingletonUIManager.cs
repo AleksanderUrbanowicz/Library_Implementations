@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
-using BaseLibrary.Managers;
+﻿using BaseLibrary.Managers;
 using BaseLibrary.UI;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace GeneralImplementations.Managers
 {

@@ -7,6 +7,6 @@ namespace GeneralImplementations.Managers
     {
         void Init(RaycastData raycastData);
 
-        RaycastExecutorData GetExecutorData();
+       // RaycastExecutorData GetExecutorData();
     }
 }

@@ -1,9 +1,7 @@
 ﻿using BaseLibrary.StateMachine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-namespace GeneralImplementations.StateMachine { 
-public class NavigationDestinationDecision : NavigationDecision
+namespace GeneralImplementations.StateMachine
+{
+    public class NavigationDestinationDecision : NavigationDecision
     {
         private float distance = -1;
 
@@ -11,7 +9,7 @@ public class NavigationDestinationDecision : NavigationDecision
 
         public override bool Decide(NavigationStateController controller)
         {
-           
+
             if (Distance == -1)
             {
                 Distance = controller.NavMeshAgent.stoppingDistance;
