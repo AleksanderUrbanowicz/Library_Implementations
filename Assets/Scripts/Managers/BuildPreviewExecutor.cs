@@ -16,8 +16,6 @@ namespace Managers
         private bool isPreviewAvailable;
         public Vector3 lastPoint;
 
-
-
         public Spawner PreviewSpawner { get => previewSpawner = previewSpawner == null ? new Spawner() : previewSpawner; set => previewSpawner = value; }
         public RaycastHit RaycastHitOutput { get => MonoBehaviourHookup.RaycastHitOutput; set => MonoBehaviourHookup.RaycastHitOutput = value; }
         public PreviewObject PreviewObject { get => previewObject; set => previewObject = value; }
@@ -91,10 +89,6 @@ namespace Managers
             }
 
         }
-
-
-
-
         public bool IsPreviewAvailable
         {
             get
@@ -109,8 +103,7 @@ namespace Managers
             set => isPreviewAvailable = value;
         }
 
-
-        public new void Execute()
+        public override void Execute()
         {
             //  Debug.Log("PreviewExecute");
 
@@ -200,9 +193,6 @@ namespace Managers
 
         }
 
-
-
-
         public void TooglePreviewGameObject(bool b)
         {
             // IsExecuting = b;
@@ -238,6 +228,6 @@ namespace Managers
             }
         }
 
-
+     
     }
 }

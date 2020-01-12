@@ -35,6 +35,21 @@ namespace GeneralImplementations.Managers
             return RaycastHitOutput.point;
         }
 
+        public override void StartExecute()
+        {
+            base.StartExecute();
+            Debug.LogError("StartRaycasExecute");
+            
+        }
+
+        public override void StopExecute()
+        {
+            base.StopExecute();
+            Debug.LogError("StopRaycasExecute");
+
+            
+        }
+
         public void StartExecute(LayerMask _layersToCheck)
         {
             layersToCheck = _layersToCheck;
@@ -60,9 +75,9 @@ namespace GeneralImplementations.Managers
             }
         }
 
-        public new void Execute()
+        public override void Execute()
         {
-            // Debug.Log("Execute");
+             Debug.Log("Execute Raycast");
             if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out MonoBehaviourHookup.raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
             {
 

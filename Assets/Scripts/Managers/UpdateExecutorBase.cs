@@ -64,10 +64,8 @@ namespace BaseLibrary.Managers
             IsExecuting = false;
         }
 
-        public virtual void Execute()
-        {
-
-        }
+        public abstract void Execute();
+       
 
         public bool CheckUpdateConditions
         {
