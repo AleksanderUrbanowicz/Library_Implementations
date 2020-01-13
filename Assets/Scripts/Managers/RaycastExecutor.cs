@@ -15,6 +15,8 @@ namespace GeneralImplementations.Managers
         public Transform targetFrom;
         //private RaycastData raycastdata;
         public ScriptableEventListener currentPreviewObjectChangedListener;
+        private RaycastHit raycastHitOutput;
+
         public void Init()
         {
             isExecuting = false;
@@ -24,10 +26,14 @@ namespace GeneralImplementations.Managers
                 targetFrom = GameObject.FindGameObjectWithTag(Raycastdata.targetTag).transform;
             }
             // layersToCheck = Raycastdata.defaultLayerToScan;
-
+           // Debug.LogError("MonoBehaviourHookup.name: " + MonoBehaviourHookup.name);
         }
 
-
+        public override void Awake()
+        {
+            base.Awake();
+            Debug.LogError("RaycastExecutor.Awake()");
+        }
         public void InitEventListeners()
         {
             //hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, raycastdata.hitMissEvents.scriptableEventTrue, HandlePreviewAvailable, raycastdata.hitMissEvents.scriptableEventFalse, HandlePreviewUnavailable);
@@ -37,7 +43,7 @@ namespace GeneralImplementations.Managers
 
         private void UpdateCurrentPreviewObject()
         {
-
+            Debug.Log("UpdateCurrentPreviewObject");
         }
 
         public override void StartExecute()
@@ -94,7 +100,7 @@ namespace GeneralImplementations.Managers
 
         }
 
-        public RaycastHit RaycastHitOutput { get => MonoBehaviourHookup.RaycastHitOutput; set => MonoBehaviourHookup.RaycastHitOutput = value; }
+        public RaycastHit RaycastHitOutput { get => raycastHitOutput; set => raycastHitOutput = value; }
         public RaycastData Raycastdata { get => SingletonBuildManager.Instance.raycastData; set => SingletonBuildManager.Instance.raycastData = value; }
 
         void OnDrawGizmos()

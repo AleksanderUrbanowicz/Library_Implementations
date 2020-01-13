@@ -12,8 +12,22 @@ namespace Managers
         private PreviewHelper previewHelper;
         public ScriptableEventListener currentPreviewObjectChangedListener;
 
+        public BuildPreviewExecutor()
+        {
+            Debug.LogError("BuildPreviewExecutor()");
+        }
 
-        public RaycastHit RaycastHitOutput { get => MonoBehaviourHookup.RaycastHitOutput; }
+        public override void Awake()
+        {
+            base.Awake();
+            Debug.LogError("BuildPreviewExecutor.Awake()");
+        }
+
+        public void Start()
+        {
+            Debug.LogError("BuildPreviewExecutor.Start()");
+        }
+       
         public PreviewData PreviewData { get => SingletonBuildManager.Instance.previewData; set => SingletonBuildManager.Instance.previewData = value; }
 
         public PreviewHelper PreviewHelper
@@ -22,7 +36,8 @@ namespace Managers
             {
                 if (previewHelper == null)
                 {
-                    previewHelper = new PreviewHelper(SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject);
+                    Debug.LogError("BuildPreviewExecutor.PreviewHelper== null");
+                    previewHelper = gameObject.AddComponent<PreviewHelper>();
 
                 }
                 return previewHelper;
@@ -31,13 +46,22 @@ namespace Managers
 
         public void Init(ISpawnableBuildObject _spawnableBuildObject)
         {
+            Debug.LogError("BuildPreviewExecutor.Init");
             if (_spawnableBuildObject == null)
             {
+                Debug.LogError("BuildPreviewExecutor.Init(ISpawnableBuildObject==null)");
+
                 _spawnableBuildObject = SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject;
 
             }
             IsExecuting = false;
-            previewHelper = new PreviewHelper(_spawnableBuildObject);
+            if (previewHelper == null)
+            {
+                Debug.LogError("BuildPreviewExecutor.Init(previewHelper==null)");
+                previewHelper = gameObject.AddComponent<PreviewHelper>();
+               // previewHelper.
+            }
+           // Debug.LogError("MonoBehaviourHookup.name: "+ MonoBehaviourHookup.name);
             InitEventListeners();
 
 
@@ -46,7 +70,7 @@ namespace Managers
 
         public void InitEventListeners()
         {
-            //  hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.Instance.raycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.Instance.raycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
+              hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.Instance.raycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.Instance.raycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
             currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
             currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.Instance.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
         }
@@ -63,7 +87,7 @@ namespace Managers
 
         private void UpdateCurrentPreviewObject()
         {
-            PreviewHelper.UpdateCurrentPreview();
+           // PreviewHelper.UpdateCurrentPreview();
         }
 
 
@@ -90,40 +114,37 @@ namespace Managers
         {
             //  Debug.Log("PreviewExecute");
 
-            if (CheckRaycastDelta(RaycastHitOutput.point, RaycastHitOutput.normal))
+            if (MonoBehaviourHookup.RaycastHitInterpreter.CheckRaycastDelta())
             {
-                PreviewHelper.MapPreviewToGrid(RaycastHitOutput.point, RaycastHitOutput.normal);
+                MonoBehaviourHookup.RaycastHitInterpreter.MapPreviewToGrid();
 
-
+                boolOutput = true;
+                SendEvent();
                 //  SetPreviewColor();
                 //DisplayPreview(RaycastHitOutput.point, RaycastHitOutput.normal);
 
             }
+            else
+            {
+                boolOutput = false;
+
+            }
         }
-        public bool CheckRaycastDelta(Vector3 _point, Vector3 _normal)
+ 
+        public void SendEvent()
         {
-            // Debug.LogError("CheckRaycastDelta");
 
-            if (PreviewHelper.lastPoint == _point)
+           
+            if (boolOutput)
             {
-                return false;
+                PreviewData.gridSnapEvent.Raise();
             }
-
-
-            float distance = Vector3.Distance(PreviewHelper.previewBuildObject.transform.position, _point);
-            if (distance > PreviewData.previewSnapFactor * PreviewData.gridSize)
-            {
-                PreviewHelper.lastPoint = _point;
-                return true;
-
-            }
-            return false;
+          
         }
-
         public override void StartExecute()
         {
             base.StartExecute();
-            Debug.LogError("StartPreviewExecute");
+            Debug.Log("StartPreviewExecute");
             //InitPreview(SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject);
             //PreviewObject.ChangePreviewObject(SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject);
             PreviewHelper.previewBuildObject.ToggleVisibility(true);
@@ -131,7 +152,7 @@ namespace Managers
         public override void StopExecute()
         {
             base.StopExecute();
-            Debug.LogError("StopPreviewExecute");
+            Debug.Log("StopPreviewExecute");
 
             PreviewHelper.previewBuildObject.ToggleVisibility(false);
         }
@@ -140,10 +161,10 @@ namespace Managers
 
         void OnDrawGizmos()
         {
-            if (PreviewHelper.lastMappedPoint == default)
-            {
+            //if (previewHelper.da.RaycastHitInterpreter.RaycastExecutorData.lastMappedPoint == default)
+            //{
                 return;
-            }
+           // }
             if (true)
             {
                 Gizmos.color = Color.green;
@@ -152,7 +173,7 @@ namespace Managers
             {
                 Gizmos.color = Color.red;
             }
-            Gizmos.DrawSphere(PreviewHelper.lastMappedPoint, 0.06f);
+            Gizmos.DrawSphere(MonoBehaviourHookup.RaycastHitInterpreter.RaycastExecutorData.lastMappedPoint, 0.06f);
             // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
             // Gizmos.DrawLine(targetFrom.position,  point);
         }

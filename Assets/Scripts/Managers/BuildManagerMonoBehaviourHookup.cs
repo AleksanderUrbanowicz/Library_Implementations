@@ -8,26 +8,23 @@ namespace Managers
     {
         private RaycastExecutor buildSystemRaycast;
         private BuildPreviewExecutor buildPreviewExecutor;
-
+        private PreviewRaycastHitInterpreter raycastHitInterpreter;
         public RaycastHit raycastHitOutput;
-
+        /*
         public RaycastHit RaycastHitOutput
         {
-            get { return raycastHitOutput; }
+            get { return RaycastHitInterpreter.RaycastExecutorData.RaycastHitOutput; }
             set
             {
                 Debug.Log("RaycastHitOutput.Set: " + value.point);
-                raycastHitOutput = value;
+                RaycastHitInterpreter.RaycastExecutorData.RaycastHitOutput = value;
             }
         }
-
+        */
         public RaycastExecutor BuildSystemRaycast { get => buildSystemRaycast; set => buildSystemRaycast = value; }
         public BuildPreviewExecutor BuildPreviewExecutor { get => buildPreviewExecutor; set => buildPreviewExecutor = value; }
-        /*  public PreviewBuildObject PreviewObject { get { 
+        public PreviewRaycastHitInterpreter RaycastHitInterpreter { get => raycastHitInterpreter; set => raycastHitInterpreter = value; }
 
-                   return BuildPreviewExecutor.PreviewObject; } set => BuildPreviewExecutor.PreviewObject = value; }
-
-       */
         private void OnGUI()
         {
             if (SingletonBuildManager.Instance.IsManagerActive)

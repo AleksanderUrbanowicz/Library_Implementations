@@ -15,7 +15,7 @@ namespace GeneralImplementations.Data
 
         public void Init(ISpawnableBuildObject _spawnableBuildObject)
         {
-
+            Debug.Log("PreviewBuildObject.Init(ISpawnableBuildObject _spawnableBuildObject)");
             AddPreviewComponents(buildObjectData);
 
         }

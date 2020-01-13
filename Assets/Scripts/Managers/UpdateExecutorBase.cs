@@ -17,7 +17,10 @@ namespace BaseLibrary.Managers
         {
             get
             {
+                
+
                 monoBehaviourHookup = monoBehaviourHookup == null ? monoBehaviourHookup = GetComponent<BuildManagerMonoBehaviourHookup>() : monoBehaviourHookup;
+                Debug.LogError("UpdateExecutorBase.MonoBehaviourHookup.Get: "+monoBehaviourHookup.name);
                 return monoBehaviourHookup;
             }
             set => monoBehaviourHookup = value;
@@ -34,7 +37,10 @@ namespace BaseLibrary.Managers
                 isExecuting = value;
             }
         }
-
+        public virtual void Awake()
+        {
+            Debug.LogError("MonoBehaviourHookup.name: " + MonoBehaviourHookup.name);
+        }
 
 
         public virtual void Update()

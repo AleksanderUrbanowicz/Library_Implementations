@@ -12,6 +12,6 @@ namespace GeneralImplementations.Managers
 
 
 
-        bool CheckRaycastDelta(Vector3 _point, Vector3 _normal);
+       // bool CheckRaycastDelta(Vector3 _point, Vector3 _normal);
     }
 }
