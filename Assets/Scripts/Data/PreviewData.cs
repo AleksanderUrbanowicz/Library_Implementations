@@ -12,12 +12,12 @@ namespace GeneralImplementations.Data
         public Color unavailableColor = new Color(1.0f, 0, 0, 0.2f);
         public Material previewMaterial;
 
-        [Tooltip("Events to notify when preview object is available<->inavailable to build")]
-        public BoolEventGroup buildAvailableEvents = new BoolEventGroup();
-        [Tooltip("Number of Updates to skip  per one executed")]
-        //public int displayInterval;
+        public ScriptableEvent gridSnapEvent;
+        
         public float offset = 1.0f;
-        public float gridSize = 1.0f;
-        public float previewSnapFactor = 1.0f;
+        public float gridSize = 0.5f;
+        public float previewSnapFactor = 0.5f;
+        [Tooltip("Threshold gridSize to ignore grid")]
+        public float gridSizeEpsilon = 0.05f;
     }
 }

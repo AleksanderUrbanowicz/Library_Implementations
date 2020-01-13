@@ -43,7 +43,7 @@ namespace EditorUtilities
             GameObject res = Resources.Load<GameObject>(name);
             if (res == null)
             {
-                Debug.LogError(name + " does not exist");
+                // Debug.LogError(name + " does not exist");
                 return res;
 
             }

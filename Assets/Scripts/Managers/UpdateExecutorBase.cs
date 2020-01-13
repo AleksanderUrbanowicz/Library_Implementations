@@ -65,7 +65,7 @@ namespace BaseLibrary.Managers
         }
 
         public abstract void Execute();
-       
+
 
         public bool CheckUpdateConditions
         {

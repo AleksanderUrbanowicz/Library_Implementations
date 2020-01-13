@@ -1,7 +1,9 @@
 ﻿
 using BaseLibrary.Managers;
+using BaseLibrary.StateMachine;
 using GeneralImplementations.Data;
 using Managers;
+using UnityEditor;
 using UnityEngine;
 
 namespace GeneralImplementations.Managers
@@ -9,50 +11,53 @@ namespace GeneralImplementations.Managers
     public class RaycastExecutor : UpdateExecutorBase, IRaycastExecutor
     {
 
-        public LayerMask layersToCheck;
+        // public LayerMask layersToCheck;
         public Transform targetFrom;
-        public RaycastData raycastdata;
-        //public BoolEventListener hitMissListeners;
-        public void Init(RaycastData _raycastdata)
+        //private RaycastData raycastdata;
+        public ScriptableEventListener currentPreviewObjectChangedListener;
+        public void Init()
         {
             isExecuting = false;
-            raycastdata = _raycastdata;
+
             if (targetFrom == null)
             {
-                targetFrom = GameObject.FindGameObjectWithTag(raycastdata.targetTag).transform;
+                targetFrom = GameObject.FindGameObjectWithTag(Raycastdata.targetTag).transform;
             }
-            layersToCheck = raycastdata.defaultLayerToScan;
+            // layersToCheck = Raycastdata.defaultLayerToScan;
 
         }
 
-        public RaycastHit GetRaycastHit()
+
+        public void InitEventListeners()
         {
-            return RaycastHitOutput;
+            //hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, raycastdata.hitMissEvents.scriptableEventTrue, HandlePreviewAvailable, raycastdata.hitMissEvents.scriptableEventFalse, HandlePreviewUnavailable);
+            currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
+            currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.Instance.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
         }
 
-        public Vector3 GetPoint()
+        private void UpdateCurrentPreviewObject()
         {
-            return RaycastHitOutput.point;
+
         }
 
         public override void StartExecute()
         {
             base.StartExecute();
-            Debug.LogError("StartRaycasExecute");
-            
+            Debug.Log("StartRaycasExecute");
+
         }
 
         public override void StopExecute()
         {
             base.StopExecute();
-            Debug.LogError("StopRaycasExecute");
+            Debug.Log("StopRaycasExecute");
 
-            
+
         }
 
         public void StartExecute(LayerMask _layersToCheck)
         {
-            layersToCheck = _layersToCheck;
+            Raycastdata.defaultLayerToScan = _layersToCheck;
             StartExecute();
 
         }
@@ -62,25 +67,25 @@ namespace GeneralImplementations.Managers
             boolOutput = !boolOutput;
             if (boolOutput)
             {
-                if (raycastdata.stopAfterHit)
+                if (Raycastdata.stopAfterHit)
                 {
                     (this as IUpdateExecutor).StopExecute();
 
                 }
-                raycastdata.hitMissEvents.scriptableEventTrue.Raise();
+                Raycastdata.hitMissEvents.scriptableEventTrue.Raise();
             }
             else
             {
-                raycastdata.hitMissEvents.scriptableEventFalse.Raise();
+                Raycastdata.hitMissEvents.scriptableEventFalse.Raise();
             }
         }
 
         public override void Execute()
         {
-             Debug.Log("Execute Raycast");
-            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out MonoBehaviourHookup.raycastHitOutput, raycastdata.raycastMaxDistance, layersToCheck))
+            // Debug.Log("Execute Raycast");
+            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out MonoBehaviourHookup.raycastHitOutput, Raycastdata.raycastMaxDistance, Raycastdata.defaultLayerToScan))
             {
-
+                Debug.Log("Execute Raycast, output changed: " + boolOutput);
                 SendEvent();
 
             }
@@ -90,46 +95,48 @@ namespace GeneralImplementations.Managers
         }
 
         public RaycastHit RaycastHitOutput { get => MonoBehaviourHookup.RaycastHitOutput; set => MonoBehaviourHookup.RaycastHitOutput = value; }
-
-
+        public RaycastData Raycastdata { get => SingletonBuildManager.Instance.raycastData; set => SingletonBuildManager.Instance.raycastData = value; }
 
         void OnDrawGizmos()
         {
-            /*
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(SingletonBuildManager.Instance.BuildPreviewExecutor.PreviewObject.transform.position, 0.04f);
-            Gizmos.color = Color.grey;
-            Gizmos.DrawSphere(RaycastHitOutput.point, 0.02f);
-
-            Gizmos.DrawLine(RaycastHitOutput.point, RaycastHitOutput.point + RaycastHitOutput.normal);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(SingletonBuildManager.Instance.gizmosData.cornerAxisVector, SingletonBuildManager.Instance.gizmosData.cornerAxisVector + Vector3.right * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
-
-            bool b = MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position != null;
-
-            if (b)
+            if (RaycastHitOutput.normal == default)
             {
-
-                Gizmos.DrawLine(MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position, MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position + Vector3.right * 1.5f);
-
-
-
-                Gizmos.color = Color.green;
-                Gizmos.DrawLine(SingletonBuildManager.Instance.gizmosData.cornerAxisVector, SingletonBuildManager.Instance.gizmosData.cornerAxisVector + Vector3.up * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
-
-
-                Gizmos.DrawLine(MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position, MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position + Vector3.up * 1.5f);
-
-                Gizmos.color = Color.blue;
-
-
-
-                Gizmos.DrawLine(MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position, MonoBehaviourHookup.BuildPreviewExecutor.PreviewObject.transform.position + Vector3.forward * 1.5f);
+                return;
             }
-            Gizmos.DrawLine(SingletonBuildManager.Instance.gizmosData.cornerAxisVector, SingletonBuildManager.Instance.gizmosData.cornerAxisVector + Vector3.forward * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
+            Vector3 normal = RaycastHitOutput.normal;
+            Vector3 point = RaycastHitOutput.point;
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(point, 0.04f);
+            // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
+            // Gizmos.DrawLine(targetFrom.position,  point);
 
 
-    */
+            //Handles.Label(point+Vector3.up*0.7f, layersToCheck.value.ToString());
+            Handles.Label(point + Vector3.up * 0.5f, RaycastHitOutput.collider != null ? RaycastHitOutput.collider.gameObject.name : "No hit");
+            Gizmos.color = new Color(normal.x, normal.y, normal.z);
+
+
+            Gizmos.DrawLine(point, point + normal);
+
+            // Gizmos.color = Color.white;
+            Gizmos.color = Color.white;
+
+            Vector3 cornerAxisVector = targetFrom.position - Vector3.up * targetFrom.position.y + Vector3.forward + Vector3.right;
+            Gizmos.DrawSphere(cornerAxisVector, 0.04f);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(cornerAxisVector, cornerAxisVector + Vector3.right * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(cornerAxisVector, cornerAxisVector + Vector3.up * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawLine(cornerAxisVector, cornerAxisVector + Vector3.forward * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
+
+
+
+
+
 
         }
 

@@ -15,7 +15,7 @@ namespace GeneralImplementations.Data
 
         public void Init()
         {
-            Debug.Log(GetType().Name + " Init.");
+            // Debug.Log(GetType().Name + " Init.");
 
         }
     }

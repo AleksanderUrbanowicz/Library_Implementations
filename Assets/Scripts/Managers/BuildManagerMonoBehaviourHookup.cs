@@ -1,5 +1,4 @@
 ﻿using BaseLibrary.Managers;
-using GeneralImplementations.Data;
 using GeneralImplementations.Managers;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace Managers
     {
         private RaycastExecutor buildSystemRaycast;
         private BuildPreviewExecutor buildPreviewExecutor;
-     
+
         public RaycastHit raycastHitOutput;
 
         public RaycastHit RaycastHitOutput
@@ -24,10 +23,11 @@ namespace Managers
 
         public RaycastExecutor BuildSystemRaycast { get => buildSystemRaycast; set => buildSystemRaycast = value; }
         public BuildPreviewExecutor BuildPreviewExecutor { get => buildPreviewExecutor; set => buildPreviewExecutor = value; }
-        public PreviewObject PreviewObject { get { 
-              
-                return BuildPreviewExecutor.PreviewObject; } set => BuildPreviewExecutor.PreviewObject = value; }
+        /*  public PreviewBuildObject PreviewObject { get { 
 
+                   return BuildPreviewExecutor.PreviewObject; } set => BuildPreviewExecutor.PreviewObject = value; }
+
+       */
         private void OnGUI()
         {
             if (SingletonBuildManager.Instance.IsManagerActive)
@@ -67,10 +67,10 @@ namespace Managers
 
             if (GUI.Button(new Rect(Vector2.up * 220, Vector2.one * 90), "Next"))
             {
-                Debug.LogError("Before Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
+                //Debug.LogError("Before Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
 
-                SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex++;
-                Debug.LogError("Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
+                SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObjectIndex++;
+                //Debug.LogError("Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
             }
 
         }
