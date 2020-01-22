@@ -7,20 +7,18 @@ namespace BaseLibrary.Managers
     public abstract class UpdateExecutorBase : MonoBehaviour, IUpdateExecutor
     {
 
-        public bool isExecuting;
-        private int counter = 0;
+        protected bool isExecuting;
+        public int counter = 0;
         public int interval;
-        public bool boolOutput;
+        protected bool boolOutput;
         public BoolEventListener hitMissListeners;
         public BuildManagerMonoBehaviourHookup monoBehaviourHookup;
         public BuildManagerMonoBehaviourHookup MonoBehaviourHookup
         {
             get
             {
-                
-
                 monoBehaviourHookup = monoBehaviourHookup == null ? monoBehaviourHookup = GetComponent<BuildManagerMonoBehaviourHookup>() : monoBehaviourHookup;
-                Debug.LogError("UpdateExecutorBase.MonoBehaviourHookup.Get: "+monoBehaviourHookup.name);
+               // Debug.LogError("UpdateExecutorBase.MonoBehaviourHookup.Get: "+monoBehaviourHookup.name);
                 return monoBehaviourHookup;
             }
             set => monoBehaviourHookup = value;
@@ -37,12 +35,13 @@ namespace BaseLibrary.Managers
                 isExecuting = value;
             }
         }
+       
         public virtual void Awake()
         {
-            Debug.LogError("MonoBehaviourHookup.name: " + MonoBehaviourHookup.name);
+           //Init();
         }
-
-
+        
+       
         public virtual void Update()
         {
 
@@ -52,7 +51,7 @@ namespace BaseLibrary.Managers
             }
 
 
-            if ((this as IUpdateExecutor).CheckUpdateConditions)
+            if (CheckUpdateConditions)
             {
 
                 Execute();

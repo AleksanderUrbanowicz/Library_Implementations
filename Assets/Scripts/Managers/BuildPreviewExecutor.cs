@@ -9,70 +9,65 @@ namespace Managers
 {
     public class BuildPreviewExecutor : UpdateExecutorBase, IPreviewExecutor
     {
-        private PreviewHelper previewHelper;
+        
+        private PreviewRaycastHitInterpreter raycastHitInterpreter;
         public ScriptableEventListener currentPreviewObjectChangedListener;
+        private RaycastExecutorData raycastExecutorData;
 
-        public BuildPreviewExecutor()
-        {
-            Debug.LogError("BuildPreviewExecutor()");
-        }
+
+        public PreviewRaycastHitInterpreter RaycastHitInterpreter { get => raycastHitInterpreter; set => raycastHitInterpreter = value; }
 
         public override void Awake()
         {
             base.Awake();
-            Debug.LogError("BuildPreviewExecutor.Awake()");
+            Debug.Log("BuildPreviewExecutor.Awake()");
+            Init();
         }
 
         public void Start()
         {
-            Debug.LogError("BuildPreviewExecutor.Start()");
+            Debug.Log("BuildPreviewExecutor.Start()");
         }
        
-        public PreviewData PreviewData { get => SingletonBuildManager.Instance.previewData; set => SingletonBuildManager.Instance.previewData = value; }
+        public PreviewData PreviewData { get => SingletonBuildManager.PreviewData; set => SingletonBuildManager.PreviewData = value; }
 
         public PreviewHelper PreviewHelper
         {
             get
             {
-                if (previewHelper == null)
-                {
-                    Debug.LogError("BuildPreviewExecutor.PreviewHelper== null");
-                    previewHelper = gameObject.AddComponent<PreviewHelper>();
-
-                }
-                return previewHelper;
+                return SingletonBuildManager.MonoBehaviourHookup.PreviewHelper;
             }
+
         }
 
-        public void Init(ISpawnableBuildObject _spawnableBuildObject)
+        public RaycastExecutorData RaycastExecutorData
         {
-            Debug.LogError("BuildPreviewExecutor.Init");
-            if (_spawnableBuildObject == null)
+            get
             {
-                Debug.LogError("BuildPreviewExecutor.Init(ISpawnableBuildObject==null)");
+                if (raycastExecutorData == null)
+                {
 
-                _spawnableBuildObject = SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject;
-
+                    raycastExecutorData = GetComponent<RaycastExecutorData>() != null ? GetComponent<RaycastExecutorData>() : gameObject.AddComponent<RaycastExecutorData>();
+                }
+                return raycastExecutorData;
             }
-            IsExecuting = false;
-            if (previewHelper == null)
-            {
-                Debug.LogError("BuildPreviewExecutor.Init(previewHelper==null)");
-                previewHelper = gameObject.AddComponent<PreviewHelper>();
-               // previewHelper.
-            }
-           // Debug.LogError("MonoBehaviourHookup.name: "+ MonoBehaviourHookup.name);
+            set => raycastExecutorData = value;
+        }
+      
+        public  void Init()
+        {
+            isExecuting = false;
+          
             InitEventListeners();
-
-
+           // RaycastHitInterpreter = gameObject.AddComponent<PreviewRaycastHitInterpreter>();
 
         }
 
         public void InitEventListeners()
         {
-              hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.Instance.raycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.Instance.raycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
-            currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
-            currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.Instance.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
+              hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
+            //currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
+           // currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
         }
 
         private void HandleRaycastHit()
@@ -87,11 +82,9 @@ namespace Managers
 
         private void UpdateCurrentPreviewObject()
         {
-           // PreviewHelper.UpdateCurrentPreview();
+            Debug.LogError("BuildPreviewExecutor.UpdateCurrentPreviewObject()");
+            //PreviewHelper.UpdateCurrentPreview();
         }
-
-
-
 
         public override void Update()
         {
@@ -113,14 +106,14 @@ namespace Managers
         public override void Execute()
         {
             //  Debug.Log("PreviewExecute");
-
-            if (MonoBehaviourHookup.RaycastHitInterpreter.CheckRaycastDelta())
+            
+            if (RaycastHitInterpreter.CheckRaycastDelta())
             {
-                MonoBehaviourHookup.RaycastHitInterpreter.MapPreviewToGrid();
+                RaycastHitInterpreter.MapPreviewToGrid();
 
                 boolOutput = true;
                 SendEvent();
-                //  SetPreviewColor();
+                 // SetPreviewColor();
                 //DisplayPreview(RaycastHitOutput.point, RaycastHitOutput.normal);
 
             }
@@ -145,16 +138,14 @@ namespace Managers
         {
             base.StartExecute();
             Debug.Log("StartPreviewExecute");
-            //InitPreview(SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject);
-            //PreviewObject.ChangePreviewObject(SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObject);
-            PreviewHelper.previewBuildObject.ToggleVisibility(true);
+           PreviewHelper.PreviewBuildObject.ToggleVisibility(true);
         }
         public override void StopExecute()
         {
             base.StopExecute();
             Debug.Log("StopPreviewExecute");
 
-            PreviewHelper.previewBuildObject.ToggleVisibility(false);
+            PreviewHelper.PreviewBuildObject.ToggleVisibility(false);
         }
 
 
@@ -173,11 +164,14 @@ namespace Managers
             {
                 Gizmos.color = Color.red;
             }
-            Gizmos.DrawSphere(MonoBehaviourHookup.RaycastHitInterpreter.RaycastExecutorData.lastMappedPoint, 0.06f);
+            Gizmos.DrawSphere(MonoBehaviourHookup.RaycastExecutorData.lastMappedPoint, 0.06f);
             // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
             // Gizmos.DrawLine(targetFrom.position,  point);
         }
 
-
+        public void Init(ISpawnableBuildObject spawnable)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

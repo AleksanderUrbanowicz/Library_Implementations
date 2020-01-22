@@ -13,14 +13,20 @@ namespace GeneralImplementations.Data
         private BoxCollider previewCollider;
         private MeshRenderer previewRenderer;
 
-        public void Init(ISpawnableBuildObject _spawnableBuildObject)
+        public void Init(BuildObjectData _buildObjectData)
         {
+            buildObjectData = _buildObjectData;
             Debug.Log("PreviewBuildObject.Init(ISpawnableBuildObject _spawnableBuildObject)");
-            AddPreviewComponents(buildObjectData);
+            AddPreviewComponents(_buildObjectData);
 
         }
+        public void Awake()
+        {
+          //  Debug.Log("PreviewBuildObject.awake)");
+            //Init();
 
-        private void AddPreviewComponents(BuildObjectData buildObjectData = null)
+        }
+        private void AddPreviewComponents(BuildObjectData buildObjectData=null)
         {
 
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -42,7 +48,7 @@ namespace GeneralImplementations.Data
 
             }
             previewRenderer = cube.gameObject.GetComponent<MeshRenderer>();
-            previewRenderer.material = SingletonBuildManager.Instance.previewData.previewMaterial;
+            previewRenderer.material = SingletonBuildManager.PreviewData.previewMaterial;
             previewCollider = cube.GetComponent<BoxCollider>();
             previewCollider.isTrigger = true;
 
@@ -51,7 +57,7 @@ namespace GeneralImplementations.Data
         {
             bool b = _b == null ? CheckAvailability() : (bool)_b;
 
-            PreviewRenderer.material.color = b ? SingletonBuildManager.Instance.previewData.availableColor : SingletonBuildManager.Instance.previewData.unavailableColor;
+            PreviewRenderer.material.color = b ? SingletonBuildManager.PreviewData.availableColor : SingletonBuildManager.PreviewData.unavailableColor;
         }
 
         public void ToggleVisibility(bool b)

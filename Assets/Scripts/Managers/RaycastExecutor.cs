@@ -11,13 +11,13 @@ namespace GeneralImplementations.Managers
     public class RaycastExecutor : UpdateExecutorBase, IRaycastExecutor
     {
 
-        // public LayerMask layersToCheck;
         public Transform targetFrom;
-        //private RaycastData raycastdata;
         public ScriptableEventListener currentPreviewObjectChangedListener;
-        private RaycastHit raycastHitOutput;
 
-        public void Init()
+        public RaycastData Raycastdata { get => SingletonBuildManager.RaycastData; set => SingletonBuildManager.RaycastData = value; }
+        public RaycastExecutorData _RaycastExecutorData { get => SingletonBuildManager.MonoBehaviourHookup.RaycastExecutorData; set => SingletonBuildManager.MonoBehaviourHookup.RaycastExecutorData = value; }
+
+        public  void Init()
         {
             isExecuting = false;
 
@@ -25,25 +25,27 @@ namespace GeneralImplementations.Managers
             {
                 targetFrom = GameObject.FindGameObjectWithTag(Raycastdata.targetTag).transform;
             }
-            // layersToCheck = Raycastdata.defaultLayerToScan;
-           // Debug.LogError("MonoBehaviourHookup.name: " + MonoBehaviourHookup.name);
+            
         }
 
         public override void Awake()
         {
             base.Awake();
-            Debug.LogError("RaycastExecutor.Awake()");
+            Debug.Log("RaycastExecutor.Awake()");
+            Init();
+            InitEventListeners();
         }
         public void InitEventListeners()
         {
             //hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, raycastdata.hitMissEvents.scriptableEventTrue, HandlePreviewAvailable, raycastdata.hitMissEvents.scriptableEventFalse, HandlePreviewUnavailable);
-            currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
-            currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.Instance.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
+            currentPreviewObjectChangedListener = new GameObject(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent.name +"_Listener").AddComponent<ScriptableEventListener>();
+            currentPreviewObjectChangedListener.transform.parent = MonoBehaviourHookup.EventsListenersParent;
+            currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
         }
 
         private void UpdateCurrentPreviewObject()
         {
-            Debug.Log("UpdateCurrentPreviewObject");
+           // Debug.Log("UpdateCurrentPreviewObject");
         }
 
         public override void StartExecute()
@@ -89,7 +91,7 @@ namespace GeneralImplementations.Managers
         public override void Execute()
         {
             // Debug.Log("Execute Raycast");
-            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out MonoBehaviourHookup.raycastHitOutput, Raycastdata.raycastMaxDistance, Raycastdata.defaultLayerToScan))
+            if (boolOutput != Physics.Raycast(targetFrom.position, targetFrom.forward, out _RaycastExecutorData.raycastHitOutput, Raycastdata.raycastMaxDistance, Raycastdata.defaultLayerToScan))
             {
                 Debug.Log("Execute Raycast, output changed: " + boolOutput);
                 SendEvent();
@@ -100,17 +102,17 @@ namespace GeneralImplementations.Managers
 
         }
 
-        public RaycastHit RaycastHitOutput { get => raycastHitOutput; set => raycastHitOutput = value; }
-        public RaycastData Raycastdata { get => SingletonBuildManager.Instance.raycastData; set => SingletonBuildManager.Instance.raycastData = value; }
+
+      
 
         void OnDrawGizmos()
-        {
-            if (RaycastHitOutput.normal == default)
-            {
+        {/*
+          //  if (RaycastExecutorData.i.normal == default)
+           // {
                 return;
-            }
-            Vector3 normal = RaycastHitOutput.normal;
-            Vector3 point = RaycastHitOutput.point;
+           // }
+            Vector3 normal = RaycastExecutorData.RaycastHitOutput.normal;
+            Vector3 point = RaycastExecutorData.RaycastHitOutput.point;
             Gizmos.color = Color.magenta;
             Gizmos.DrawSphere(point, 0.04f);
             // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
@@ -142,9 +144,9 @@ namespace GeneralImplementations.Managers
 
 
 
-
-
+        */
         }
 
     }
+    
 }

@@ -1,4 +1,5 @@
 ﻿using BaseLibrary.Managers;
+using GeneralImplementations.Data;
 using GeneralImplementations.Managers;
 using UnityEngine;
 
@@ -8,65 +9,49 @@ namespace Managers
     {
         private RaycastExecutor buildSystemRaycast;
         private BuildPreviewExecutor buildPreviewExecutor;
-        private PreviewRaycastHitInterpreter raycastHitInterpreter;
-        public RaycastHit raycastHitOutput;
-        /*
-        public RaycastHit RaycastHitOutput
-        {
-            get { return RaycastHitInterpreter.RaycastExecutorData.RaycastHitOutput; }
-            set
-            {
-                Debug.Log("RaycastHitOutput.Set: " + value.point);
-                RaycastHitInterpreter.RaycastExecutorData.RaycastHitOutput = value;
-            }
-        }
-        */
+        private RaycastExecutorData raycastExecutorData;
+        private PreviewHelper previewHelper;
+        private Transform eventsListenersParent;
         public RaycastExecutor BuildSystemRaycast { get => buildSystemRaycast; set => buildSystemRaycast = value; }
         public BuildPreviewExecutor BuildPreviewExecutor { get => buildPreviewExecutor; set => buildPreviewExecutor = value; }
-        public PreviewRaycastHitInterpreter RaycastHitInterpreter { get => raycastHitInterpreter; set => raycastHitInterpreter = value; }
+        public RaycastExecutorData RaycastExecutorData { get { 
+                if(raycastExecutorData==null)
+                {
+
+                    raycastExecutorData  =   GetComponent<RaycastExecutorData>() != null ?  GetComponent<RaycastExecutorData>(): gameObject.AddComponent<RaycastExecutorData>();
+                }
+                return raycastExecutorData; } set => raycastExecutorData = value; }
+        public PreviewHelper PreviewHelper { get 
+            { 
+                if(previewHelper==null)
+                {
+
+                    //previewHelper = gameObject.AddComponent<PreviewHelper>();
+                }
+                return previewHelper; } set => previewHelper = value; }
+
+        public Transform EventsListenersParent { get => eventsListenersParent; set => eventsListenersParent = value; }
 
         private void OnGUI()
         {
-            if (SingletonBuildManager.Instance.IsManagerActive)
-            {
-                GUI.color = Color.green;
+            return;
+            GUI.color = SingletonBuildManager.IsManagerActive ? Color.green : Color.red;
 
-            }
-            else
-            {
-                GUI.color = Color.red;
-            }
+            GUI.Toggle(new Rect(Vector2.one, Vector2.one * 150), SingletonBuildManager.IsManagerActive, this.name);
 
-            GUI.Toggle(new Rect(Vector2.one, Vector2.one * 150), SingletonBuildManager.Instance.IsManagerActive, "BuildManager");
-
-            if (BuildPreviewExecutor.IsExecuting)
-            {
-                GUI.color = Color.green;
-
-            }
-            else
-            {
-                GUI.color = Color.red;
-            }
+            GUI.color = BuildPreviewExecutor.IsExecuting ? Color.green : Color.red;
 
             GUI.Toggle(new Rect(Vector2.up * 60, Vector2.one * 150), BuildPreviewExecutor.IsExecuting, "buildPreviewExecutor");
 
-            if (BuildSystemRaycast.IsExecuting)
-            {
-                GUI.color = Color.green;
-
-            }
-            else
-            {
-                GUI.color = Color.red;
-            }
+            GUI.color = BuildSystemRaycast.IsExecuting ? Color.green : Color.red;
+           
             GUI.Toggle(new Rect(Vector2.up * 120, Vector2.one * 150), BuildSystemRaycast.IsExecuting, "buildSystemRaycast");
 
             if (GUI.Button(new Rect(Vector2.up * 220, Vector2.one * 90), "Next"))
             {
                 //Debug.LogError("Before Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
 
-                SingletonBuildManager.Instance.BuildObjectsHelper.CurrentBuildObjectIndex++;
+                SingletonBuildManager.BuildObjectsHelper.CurrentBuildObjectIndex++;
                 //Debug.LogError("Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
             }
 

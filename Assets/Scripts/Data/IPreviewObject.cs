@@ -10,6 +10,6 @@ namespace BaseLibrary.Managers
         MeshRenderer PreviewRenderer { get; }
         void ToggleVisibility(bool b);
 
-        void Init(ISpawnableBuildObject spawnableBuildObject);
+        //void Init(ISpawnableBuildObject spawnableBuildObject);
     }
 }
