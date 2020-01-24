@@ -109,13 +109,10 @@ namespace GeneralImplementations.Managers
       
 
         void OnDrawGizmos()
-        {/*
-          //  if (RaycastExecutorData.i.normal == default)
-           // {
-                return;
-           // }
-            Vector3 normal = RaycastExecutorData.RaycastHitOutput.normal;
-            Vector3 point = RaycastExecutorData.RaycastHitOutput.point;
+        {
+          
+            Vector3 normal = _RaycastExecutorData.RaycastHitOutput.normal;
+            Vector3 point = _RaycastExecutorData.RaycastHitOutput.point;
             Gizmos.color = Color.magenta;
             Gizmos.DrawSphere(point, 0.04f);
             // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
@@ -123,11 +120,13 @@ namespace GeneralImplementations.Managers
 
 
             //Handles.Label(point+Vector3.up*0.7f, layersToCheck.value.ToString());
-            Handles.Label(point + Vector3.up * 0.5f, RaycastHitOutput.collider != null ? RaycastHitOutput.collider.gameObject.name : "No hit");
-            Gizmos.color = new Color(normal.x, normal.y, normal.z);
+            Handles.Label(point + Vector3.up * 0.5f, _RaycastExecutorData.RaycastHitOutput.collider != null ? _RaycastExecutorData.RaycastHitOutput.collider.gameObject.name : "No hit");
+           // Gizmos.color = new Color(normal.x, normal.y, normal.z);
 
+            Handles.color = new Color(normal.x, normal.y, normal.z);
+            Handles.DrawAAPolyLine(5, point, point + normal*2f);
 
-            Gizmos.DrawLine(point, point + normal);
+          //  Gizmos.DrawLine(point, point + normal);
 
             // Gizmos.color = Color.white;
             Gizmos.color = Color.white;
@@ -142,12 +141,11 @@ namespace GeneralImplementations.Managers
             Gizmos.DrawLine(cornerAxisVector, cornerAxisVector + Vector3.up * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(cornerAxisVector, cornerAxisVector + Vector3.forward * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
+             Gizmos.DrawLine(cornerAxisVector, cornerAxisVector + Vector3.forward * SingletonBuildManager.Instance.gizmosData.mainAxisLength);
+           
 
 
 
-
-        */
         }
 
     }
