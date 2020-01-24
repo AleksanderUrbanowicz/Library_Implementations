@@ -16,7 +16,7 @@ namespace GeneralImplementations.Data
         public void Init(BuildObjectData _buildObjectData)
         {
             buildObjectData = _buildObjectData;
-            Debug.Log("PreviewBuildObject.Init(ISpawnableBuildObject _spawnableBuildObject)");
+            //Debug.Log("PreviewBuildObject.Init(ISpawnableBuildObject _spawnableBuildObject)");
             AddPreviewComponents(_buildObjectData);
 
         }
@@ -51,10 +51,13 @@ namespace GeneralImplementations.Data
             previewRenderer.material = SingletonBuildManager.PreviewData.previewMaterial;
             previewCollider = cube.GetComponent<BoxCollider>();
             previewCollider.isTrigger = true;
+            ToggleVisibility(false);
 
         }
         public void SetPreviewColor(bool? _b = null)
         {
+            Debug.Log("PreviewBuildObject.SetPreviewColor();");
+
             bool b = _b == null ? CheckAvailability() : (bool)_b;
 
             PreviewRenderer.material.color = b ? SingletonBuildManager.PreviewData.availableColor : SingletonBuildManager.PreviewData.unavailableColor;
@@ -62,7 +65,9 @@ namespace GeneralImplementations.Data
 
         public void ToggleVisibility(bool b)
         {
-            PreviewRenderer.enabled = b;
+            Debug.Log("PreviewBuildObject.ToggleVisibility("+b+");");
+            // PreviewRenderer.enabled = b;
+            GameObjectInstance.SetActive(b);
         }
 
         public bool CheckAvailability()

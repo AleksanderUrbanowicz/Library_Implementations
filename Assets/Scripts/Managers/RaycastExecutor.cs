@@ -1,6 +1,7 @@
 ﻿
 using BaseLibrary.Managers;
 using BaseLibrary.StateMachine;
+using Data;
 using GeneralImplementations.Data;
 using Managers;
 using UnityEditor;
@@ -31,7 +32,7 @@ namespace GeneralImplementations.Managers
         public override void Awake()
         {
             base.Awake();
-            Debug.Log("RaycastExecutor.Awake()");
+            //Debug.Log("RaycastExecutor.Awake()");
             Init();
             InitEventListeners();
         }
@@ -58,6 +59,8 @@ namespace GeneralImplementations.Managers
         public override void StopExecute()
         {
             base.StopExecute();
+            boolOutput = false;
+            Raycastdata.hitMissEvents.scriptableEventFalse.Raise();
             Debug.Log("StopRaycasExecute");
 
 
@@ -98,7 +101,7 @@ namespace GeneralImplementations.Managers
 
             }
 
-
+           // Debug.Log(_RaycastExecutorData.RaycastHitOutput.point);
 
         }
 

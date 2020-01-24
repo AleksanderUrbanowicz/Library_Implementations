@@ -1,14 +1,15 @@
-﻿using System;
+﻿using Managers;
+using System;
 using UnityEngine;
 
-namespace GeneralImplementations.Data
+namespace Data
 {
     [Serializable]
     public class RaycastExecutorData :MonoBehaviour
     {
         public Vector3 lastPoint;
         public Vector3 lastMappedPoint;
-        private Transform previewObjectTransform;
+       // private Transform previewObjectTransform;
         public bool boolOutput;
 
         public RaycastHit raycastHitOutput;
@@ -20,10 +21,7 @@ namespace GeneralImplementations.Data
 
         public Transform PreviewObjectTransform { get
             { 
-                if(previewObjectTransform==null)
-                {
-                    previewObjectTransform = new GameObject(name).transform;
-                }
-                return previewObjectTransform; } set => previewObjectTransform = value; }
+                
+                return SingletonBuildManager.MonoBehaviourHookup.PreviewHelper.PreviewBuildObject.transform; }  }
     }
 }

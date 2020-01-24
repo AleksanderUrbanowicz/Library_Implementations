@@ -1,8 +1,9 @@
 ﻿using BaseLibrary.Managers;
 using BaseLibrary.StateMachine;
-
+using Data;
 using GeneralImplementations.Data;
 using GeneralImplementations.Managers;
+using System;
 using UnityEngine;
 
 namespace Managers
@@ -12,6 +13,7 @@ namespace Managers
         
         private PreviewRaycastHitInterpreter raycastHitInterpreter;
         public ScriptableEventListener currentPreviewObjectChangedListener;
+        public ScriptableEventListener snapToGridListener;
         private RaycastExecutorData raycastExecutorData;
 
 
@@ -20,13 +22,13 @@ namespace Managers
         public override void Awake()
         {
             base.Awake();
-            Debug.Log("BuildPreviewExecutor.Awake()");
+          //  Debug.Log("BuildPreviewExecutor.Awake()");
             Init();
         }
 
         public void Start()
         {
-            Debug.Log("BuildPreviewExecutor.Start()");
+           // Debug.Log("BuildPreviewExecutor.Start()");
         }
        
         public PreviewData PreviewData { get => SingletonBuildManager.PreviewData; set => SingletonBuildManager.PreviewData = value; }
@@ -65,18 +67,36 @@ namespace Managers
 
         public void InitEventListeners()
         {
-              hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
+           
+                //hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, raycastdata.hitMissEvents.scriptableEventTrue, HandlePreviewAvailable, raycastdata.hitMissEvents.scriptableEventFalse, HandlePreviewUnavailable);
+                snapToGridListener = new GameObject(PreviewData.gridSnapEvent.name + "_Listener").AddComponent<ScriptableEventListener>();
+            snapToGridListener.transform.parent = MonoBehaviourHookup.EventsListenersParent;
+            snapToGridListener.Initialize(PreviewData.gridSnapEvent, UpdatePreviewTransform);
+            
+            hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
+           
             //currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
            // currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
         }
 
+        private void UpdatePreviewTransform()
+        {
+            Debug.Log("BuildPreviewExecutor.UpdatePreviewTransform");
+
+           // PreviewHelper.PreviewBuildObject.ToggleVisibility(true);
+            PreviewHelper.PreviewBuildObject.SetPreviewColor();
+        }
+
         private void HandleRaycastHit()
         {
+            Debug.Log("BuildPreviewExecutor.HandleRaycastHit");
             StartExecute();
         }
 
         private void HandleRaycastMiss()
         {
+            Debug.Log("BuildPreviewExecutor.HandleRaycastMiss");
+
             StopExecute();
         }
 
@@ -105,15 +125,16 @@ namespace Managers
         }
         public override void Execute()
         {
-            //  Debug.Log("PreviewExecute");
+             // Debug.Log("PreviewExecute");
             
             if (RaycastHitInterpreter.CheckRaycastDelta())
             {
                 RaycastHitInterpreter.MapPreviewToGrid();
 
-                boolOutput = true;
-                SendEvent();
-                 // SetPreviewColor();
+                // boolOutput = true;
+                // SendEvent();
+               // PreviewHelper.
+                
                 //DisplayPreview(RaycastHitOutput.point, RaycastHitOutput.normal);
 
             }
