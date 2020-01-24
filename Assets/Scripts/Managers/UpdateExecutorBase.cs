@@ -8,8 +8,8 @@ namespace BaseLibrary.Managers
     {
 
         protected bool isExecuting;
-        public int counter = 0;
-        public int interval;
+        protected int counter = 0;
+        protected int interval=2;
         protected bool boolOutput;
         public BoolEventListener hitMissListeners;
         public BuildManagerMonoBehaviourHookup monoBehaviourHookup;

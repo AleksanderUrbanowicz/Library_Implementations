@@ -14,11 +14,11 @@ namespace GeneralImplementations.Data
 
         public ScriptableEvent gridSnapEvent;
         
-        public float offset = 1.0f;
-        public float gridSize = 0.5f;
-        public float previewSnapFactor = 0.5f;
+        public float offset;
+        public float gridSize;
+        public float previewSnapFactor;
         [Tooltip("Threshold gridSize to ignore grid")]
-        public float gridSizeEpsilon = 0.05f;
+        public float gridSizeEpsilon;
 
         public bool SnapToGrid
         {

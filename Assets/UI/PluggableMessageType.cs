@@ -8,11 +8,6 @@ namespace GeneralImplementations.UI
     public class PluggableMessageType : ScriptableObject, IPluggableUI
     {
 
-        string YES_NO_NEUTRAL_DEFAULT_INFO;
-
-        public void Plug(IPlugginableUI plugginable)
-        {
-            throw new System.NotImplementedException();
-        }
+       
     }
 }

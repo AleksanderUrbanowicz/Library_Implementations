@@ -33,9 +33,11 @@ namespace Managers
 
         public Transform EventsListenersParent { get => eventsListenersParent; set => eventsListenersParent = value; }
 
+        
+
         private void OnGUI()
         {
-            return;
+           
             GUI.color = SingletonBuildManager.IsManagerActive ? Color.green : Color.red;
 
             GUI.Toggle(new Rect(Vector2.one, Vector2.one * 150), SingletonBuildManager.IsManagerActive, this.name);
@@ -48,13 +50,13 @@ namespace Managers
            
             GUI.Toggle(new Rect(Vector2.up * 120, Vector2.one * 150), BuildSystemRaycast.IsExecuting, "buildSystemRaycast");
 
-            if (GUI.Button(new Rect(Vector2.up * 220, Vector2.one * 90), "Next"))
-            {
-                //Debug.LogError("Before Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
+           // if (GUI.Button(new Rect(Vector2.up * 220, Vector2.one * 90), "Next"))
+           // {
+               // Debug.LogError("Before Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
 
-                SingletonBuildManager.BuildObjectsHelper.CurrentBuildObjectIndex++;
+               // SingletonBuildManager.BuildObjectsHelper.CurrentBuildObjectIndex++;
                 //Debug.LogError("Next: " + SingletonBuildManager.Instance.buildObjectsHelper.CurrentBuildObjectIndex);
-            }
+           // }
 
         }
     }

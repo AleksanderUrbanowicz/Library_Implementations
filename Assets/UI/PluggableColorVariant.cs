@@ -10,11 +10,6 @@ namespace GeneralImplementations.UI
     {
 
 
-
-        public void Plug(IPlugginableUI plugginable)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }

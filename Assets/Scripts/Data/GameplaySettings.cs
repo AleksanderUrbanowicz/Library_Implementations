@@ -8,11 +8,6 @@ namespace GeneralImplementations.Data
     [Serializable]
     public class GameplaySettings : ScriptableObject
     {
-        public int i = 0;
-
-        private void OnEnable()
-        {
-            i++;
-        }
+       
     }
 }

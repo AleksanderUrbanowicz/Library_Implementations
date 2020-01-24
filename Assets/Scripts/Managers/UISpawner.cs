@@ -33,9 +33,9 @@ namespace BaseLibrary.Managers
             
         }
 
-        public void RegisterUI(SpawnableUIData _spawnableUI)
+        public void RegisterUI(ISpawnable _spawnableUI)
         {
-            Debug.Log("RegisterUI with id: " + _spawnableUI.GetID+ ", name: " + _spawnableUI.GetPrefab.name + ".");
+            //Debug.Log("RegisterUI with id: " + _spawnableUI.GetID+ ", name: " + _spawnableUI.GetPrefab.name + ".");
 
             if (registeredUIs == null)
             {
@@ -44,14 +44,14 @@ namespace BaseLibrary.Managers
             }
             if (registeredUIs.Count>0 && registeredUIs.ContainsKey(_spawnableUI.GetID))
             {
-                Debug.Log("ISpawnableUI with id: " + _spawnableUI.GetID + " was already registered.");
+               // Debug.Log("ISpawnableUI with id: " + _spawnableUI.GetID + " was already registered.");
 
             }
             else
             {
-                registeredUIs.Add(_spawnableUI.id, InstantiateUI(_spawnableUI));
+                registeredUIs.Add(_spawnableUI.GetID, InstantiateUI(_spawnableUI));
 
-                Debug.Log("Register ISpawnableUI with id: " + _spawnableUI.GetID + ", name: " + _spawnableUI.GetPrefab.name+"registered: "+ registeredUIs.Count);
+                //Debug.Log("Register ISpawnableUI with id: " + _spawnableUI.GetID + ", name: " + _spawnableUI.GetPrefab.name+"registered: "+ registeredUIs.Count);
 
             }
 
@@ -83,9 +83,9 @@ namespace BaseLibrary.Managers
 
         }
 
-        public GameObject InstantiateUI(SpawnableUIData _spawnableUI)
+        public GameObject InstantiateUI(ISpawnable _spawnableUI)
         {
-            Debug.Log("InstantiateUI with id: " + _spawnableUI.GetID +".");
+            //Debug.Log("InstantiateUI with id: " + _spawnableUI.GetID +".");
 
             GameObject instance = Object.Instantiate(_spawnableUI.GetPrefab, Vector3.zero, Quaternion.identity, uiParent);
             instance.name = _spawnableUI.GetID;
@@ -107,7 +107,7 @@ namespace BaseLibrary.Managers
             }
             else
             {
-                Debug.LogError("UISpawner.ToggleVisibility(" + _id + "," + b + ") no GameObject with given id.");
+               // Debug.LogError("UISpawner.ToggleVisibility(" + _id + "," + b + ") no GameObject with given id.");
             }
         }
 

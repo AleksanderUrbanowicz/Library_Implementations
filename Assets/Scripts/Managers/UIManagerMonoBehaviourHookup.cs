@@ -37,63 +37,7 @@ namespace Managers
             UICanvas.renderMode = canvasData.renderMode;
             
         }
-        /*
-       public Dictionary<string,RectTransform> uICanvases;
-       public Dictionary<string, GameObject> uIScreensPrefabs;
-       public List<ISpawnableUI> registeredUIScreens;
-       public List<ISpawnableUI> registeredUIScreensDictionary;
-       
-       public void RegisterScreenUI(IScreenUI screenUI)
-       {
-           if(uIScreensPrefabs==null)
-           {
-               uIScreensPrefabs = new Dictionary<string, GameObject>();
-
-           }
-           if(uIScreensPrefabs.ContainsKey(screenUI.GetID))
-           {
-               Debug.LogWarning("UIScreen with id: " + screenUI.GetID + " was already registered.");
-
-           }
-           else
-           {
-               uIScreensPrefabs.Add(screenUI.GetID, screenUI.GetPrefab);
-
-               Debug.Log("RegisterScreenUI with id: " + screenUI.GetID + ", name: "+screenUI.GetPrefab.name);
-
-
-           }
-
-       }
       
-
-        public void RegisterScreenUI(IScreenUI screenUI)
-        {
-            if (uIScreensPrefabs == null)
-            {
-                uIScreensPrefabs = new Dictionary<string, GameObject>();
-
-            }
-            if (uIScreensPrefabs.ContainsKey(screenUI.GetID))
-            {
-                Debug.LogWarning("UIScreen with id: " + screenUI.GetID + " was already registered.");
-
-            }
-            else
-            {
-                uIScreensPrefabs.Add(screenUI.GetID, screenUI.GetPrefab);
-
-                Debug.Log("RegisterScreenUI with id: " + screenUI.GetID + ", name: " + screenUI.GetPrefab.name);
-
-
-            }
-
-        }
-         */
-        private void InstantiateScreen(string _id)
-        {
-
-
-        }
+       
     }
 }

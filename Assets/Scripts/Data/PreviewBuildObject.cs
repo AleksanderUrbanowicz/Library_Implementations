@@ -13,18 +13,12 @@ namespace GeneralImplementations.Data
         private BoxCollider previewCollider;
         private MeshRenderer previewRenderer;
         public float userRotationF;
-        private bool isPreviewObjectVisible;
+        //private bool isPreviewObjectVisible;
         public void Init(BuildObjectData _buildObjectData)
         {
             buildObjectData = _buildObjectData;
             //Debug.Log("PreviewBuildObject.Init(ISpawnableBuildObject _spawnableBuildObject)");
             AddPreviewComponents(_buildObjectData);
-
-        }
-        public void Awake()
-        {
-          //  Debug.Log("PreviewBuildObject.awake)");
-            //Init();
 
         }
         private void AddPreviewComponents(BuildObjectData buildObjectData=null)
@@ -36,7 +30,8 @@ namespace GeneralImplementations.Data
             cube.transform.SetParent(GameObjectInstance.transform);
 
             cube.transform.localScale = new Vector3(buildObjectData.gridSize.x, buildObjectData.gridSize.y, buildObjectData.gridSize.z);
-            if (buildObjectData.orientationVector == Vector3.forward)
+            Vector3 moveVector = new Vector3((buildObjectData.gridSize.x / 2.0f) + buildObjectData.actualSize.x, -(buildObjectData.gridSize.y / 2.0f) + buildObjectData.actualSize.y, (buildObjectData.gridSize.z / 2.0f) + buildObjectData.actualSize.z);
+            /*if (buildObjectData.orientationVector == Vector3.forward)
             {
                 cube.transform.localPosition = new Vector3(0, 0, -(buildObjectData.gridSize.z / 2.0f) + buildObjectData.actualSize.z) + buildObjectData.offset;
 
@@ -48,6 +43,12 @@ namespace GeneralImplementations.Data
                 cube.transform.localPosition = new Vector3(0, buildObjectData.gridSize.y / 2.0f, 0) + buildObjectData.offset;
 
             }
+            */
+            moveVector.x*= buildObjectData.orientationVector.x;
+            moveVector.y *= buildObjectData.orientationVector.y;
+            moveVector.z *= buildObjectData.orientationVector.z;
+            cube.transform.localPosition = moveVector + buildObjectData.offset;
+
             previewRenderer = cube.gameObject.GetComponent<MeshRenderer>();
             previewRenderer.material = SingletonBuildManager.PreviewData.previewMaterial;
             previewCollider = cube.GetComponent<BoxCollider>();
@@ -68,7 +69,7 @@ namespace GeneralImplementations.Data
         {
            // Debug.Log("PreviewBuildObject.ToggleVisibility("+b+");");
             // PreviewRenderer.enabled = b;
-            isPreviewObjectVisible = b;
+          //  isPreviewObjectVisible = b;
         GameObjectInstance.SetActive(b);
         }
 

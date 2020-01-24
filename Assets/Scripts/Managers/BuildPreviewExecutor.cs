@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Managers
 {
-    public class BuildPreviewExecutor : UpdateExecutorBase, IPreviewExecutor
+    public class BuildPreviewExecutor : UpdateExecutorBase
     {
         
         private PreviewRaycastHitInterpreter raycastHitInterpreter;
@@ -68,9 +68,13 @@ namespace Managers
 
         public void InitEventListeners()
         {
-           
-                //hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, raycastdata.hitMissEvents.scriptableEventTrue, HandlePreviewAvailable, raycastdata.hitMissEvents.scriptableEventFalse, HandlePreviewUnavailable);
-                snapToGridListener = new GameObject(PreviewData.gridSnapEvent.name + "_Listener").AddComponent<ScriptableEventListener>();
+            //UpdateCurrentPreviewObject
+                
+                         currentPreviewObjectChangedListener = new GameObject(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent.name + "_Listener").AddComponent<ScriptableEventListener>();
+            currentPreviewObjectChangedListener.transform.parent = MonoBehaviourHookup.EventsListenersParent;
+            currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
+            //hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, raycastdata.hitMissEvents.scriptableEventTrue, HandlePreviewAvailable, raycastdata.hitMissEvents.scriptableEventFalse, HandlePreviewUnavailable);
+            snapToGridListener = new GameObject(PreviewData.gridSnapEvent.name + "_Listener").AddComponent<ScriptableEventListener>();
             snapToGridListener.transform.parent = MonoBehaviourHookup.EventsListenersParent;
             snapToGridListener.Initialize(PreviewData.gridSnapEvent, UpdatePreviewTransform);
             
@@ -80,29 +84,29 @@ namespace Managers
 
         private void UpdatePreviewTransform()
         {
-            Debug.Log("BuildPreviewExecutor.UpdatePreviewTransform");
+           // Debug.Log("BuildPreviewExecutor.UpdatePreviewTransform");
 
            // PreviewHelper.PreviewBuildObject.ToggleVisibility(true);
-            PreviewHelper.PreviewBuildObject.SetPreviewColor();
+           // PreviewHelper.PreviewBuildObject.SetPreviewColor();
         }
 
         private void HandleRaycastHit()
         {
-            Debug.Log("BuildPreviewExecutor.HandleRaycastHit");
+           // Debug.Log("BuildPreviewExecutor.HandleRaycastHit");
             StartExecute();
         }
 
         private void HandleRaycastMiss()
         {
-            Debug.Log("BuildPreviewExecutor.HandleRaycastMiss");
+            //Debug.Log("BuildPreviewExecutor.HandleRaycastMiss");
 
             StopExecute();
         }
 
         private void UpdateCurrentPreviewObject()
         {
-            Debug.LogError("BuildPreviewExecutor.UpdateCurrentPreviewObject()");
-            //PreviewHelper.UpdateCurrentPreview();
+            Debug.Log("BuildPreviewExecutor.UpdateCurrentPreviewObject()");
+            PreviewHelper.UpdateCurrentPreview();
         }
 
         public override void Update()
@@ -135,7 +139,8 @@ namespace Managers
 
                     RaycastHitInterpreter.UpdatePreviewTransform(RaycastHitInterpreter.MapPositionToGrid());
                     boolOutput = true;
-                    PreviewData.gridSnapEvent.Raise();
+                    PreviewHelper.PreviewBuildObject.SetPreviewColor();
+                    //PreviewData.gridSnapEvent.Raise();
                 }
             }
             else
@@ -162,13 +167,13 @@ namespace Managers
         public override void StartExecute()
         {
             base.StartExecute();
-            Debug.Log("StartPreviewExecute");
+           // Debug.Log("StartPreviewExecute");
            PreviewHelper.PreviewBuildObject.ToggleVisibility(true);
         }
         public override void StopExecute()
         {
             base.StopExecute();
-            Debug.Log("StopPreviewExecute");
+           // Debug.Log("StopPreviewExecute");
 
             PreviewHelper.PreviewBuildObject.ToggleVisibility(false);
         }

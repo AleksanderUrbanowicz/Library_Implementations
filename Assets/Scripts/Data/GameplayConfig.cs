@@ -10,8 +10,8 @@ namespace GeneralImplementations.Data
         public TransformRuntimeCollection AllPluggableTransforms;
 
         public GameplaySettings gameplaySettings;
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void BeforeSceneLoad() { CreateSingletonInstance(); }
+      //  [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+      //  public static void BeforeSceneLoad() { CreateSingletonInstance(); }
 
         public void Init()
         {

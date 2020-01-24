@@ -127,20 +127,7 @@ namespace GeneralImplementations.Managers
                 SpawnableUIData.isVisible = !SpawnableUIData.isVisible;
                 ToggleUI(SpawnableUIData, SpawnableUIData.isVisible);
             }
-            /*
-           else if (Input.GetKeyDown(KeyCode.U))
-            {
-                IsManagerActive = false;
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                SingletonUIManager.Instance.ToggleUI(spawnableUIData, true);
-            }
-            else if (Input.GetKeyDown(KeyCode.H))
-            {
-                SingletonUIManager.Instance.ToggleUI(spawnableUIData, false);
-            }
-            */
+     
         }
 
         public void InitMonoBehaviours()

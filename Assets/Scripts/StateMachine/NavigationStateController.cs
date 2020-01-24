@@ -43,12 +43,12 @@ namespace GeneralImplementations.StateMachine
 
         public void SetNearestWaypoint()
         {
-            float minDist = float.MaxValue;
+            float minDist = 100 ;
             int index = -1;
             for (int i = 0; i < NavPointList.Count; i++)
             {
-                Vector3 pos = NavPointList[i].position;
-                float temp = Vector3.SqrMagnitude(pos - transform.position);
+                //Vector3 pos = NavPointList[i].position;
+                float temp = Vector3.SqrMagnitude(NavPointList[i].position - transform.position);
                 if (temp < minDist)
                 {
 

@@ -8,8 +8,8 @@ namespace GeneralImplementations.Data
     public class SingletonGlobalConfig : ScriptableSingleton<SingletonGlobalConfig, MonoBehaviourHookup>
     {
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void BeforeSceneLoad() { CreateSingletonInstance(); }
+      //  [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+      //  public static void BeforeSceneLoad() { CreateSingletonInstance(); }
 
 
         public State buildObjectStartState;
