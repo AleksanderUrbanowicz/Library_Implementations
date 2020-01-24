@@ -15,7 +15,7 @@ namespace Managers
         public ScriptableEventListener currentPreviewObjectChangedListener;
         public ScriptableEventListener snapToGridListener;
         private RaycastExecutorData raycastExecutorData;
-
+        private bool snapToGrid;
 
         public PreviewRaycastHitInterpreter RaycastHitInterpreter { get => raycastHitInterpreter; set => raycastHitInterpreter = value; }
 
@@ -28,7 +28,8 @@ namespace Managers
 
         public void Start()
         {
-           // Debug.Log("BuildPreviewExecutor.Start()");
+            snapToGrid = PreviewData.SnapToGrid;
+            // Debug.Log("BuildPreviewExecutor.Start()");
         }
        
         public PreviewData PreviewData { get => SingletonBuildManager.PreviewData; set => SingletonBuildManager.PreviewData = value; }
@@ -75,9 +76,7 @@ namespace Managers
             
             hitMissListeners = new BoolEventListener("BuildRaycastHit", transform, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventTrue, HandleRaycastHit, SingletonBuildManager.RaycastData.hitMissEvents.scriptableEventFalse, HandleRaycastMiss);
            
-            //currentPreviewObjectChangedListener = gameObject.AddComponent<ScriptableEventListener>();
-           // currentPreviewObjectChangedListener.Initialize(SingletonBuildManager.BuildObjectsHelper.currentchangedEvent, UpdateCurrentPreviewObject);
-        }
+       }
 
         private void UpdatePreviewTransform()
         {
@@ -125,24 +124,29 @@ namespace Managers
         }
         public override void Execute()
         {
-             // Debug.Log("PreviewExecute");
-            
-            if (RaycastHitInterpreter.CheckRaycastDelta())
+            // Debug.Log("PreviewExecute");
+            if (snapToGrid)
             {
-                RaycastHitInterpreter.MapPreviewToGrid();
 
-                // boolOutput = true;
-                // SendEvent();
-               // PreviewHelper.
-                
-                //DisplayPreview(RaycastHitOutput.point, RaycastHitOutput.normal);
 
+
+                if (RaycastHitInterpreter.CheckRaycastDelta())
+                {
+
+                    RaycastHitInterpreter.UpdatePreviewTransform(RaycastHitInterpreter.MapPositionToGrid());
+                    boolOutput = true;
+                    PreviewData.gridSnapEvent.Raise();
+                }
             }
             else
             {
-                boolOutput = false;
-
+                RaycastHitInterpreter.UpdatePreviewTransform(RaycastExecutorData.RaycastHitOutput.point);
+                PreviewHelper.PreviewBuildObject.SetPreviewColor();
             }
+            
+
+            
+           
         }
  
         public void SendEvent()
@@ -151,7 +155,7 @@ namespace Managers
            
             if (boolOutput)
             {
-                PreviewData.gridSnapEvent.Raise();
+               // PreviewData.gridSnapEvent.Raise();
             }
           
         }
@@ -173,11 +177,8 @@ namespace Managers
 
         void OnDrawGizmos()
         {
-            //if (previewHelper.da.RaycastHitInterpreter.RaycastExecutorData.lastMappedPoint == default)
-            //{
-                return;
-           // }
-            if (true)
+
+            if (PreviewHelper.IsAvailable)
             {
                 Gizmos.color = Color.green;
             }
@@ -185,7 +186,8 @@ namespace Managers
             {
                 Gizmos.color = Color.red;
             }
-            Gizmos.DrawSphere(MonoBehaviourHookup.RaycastExecutorData.lastMappedPoint, 0.06f);
+          
+            Gizmos.DrawSphere(MonoBehaviourHookup.RaycastExecutorData.RaycastHitOutput.point, 0.05f);
             // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
             // Gizmos.DrawLine(targetFrom.position,  point);
         }

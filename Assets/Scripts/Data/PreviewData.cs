@@ -19,5 +19,10 @@ namespace GeneralImplementations.Data
         public float previewSnapFactor = 0.5f;
         [Tooltip("Threshold gridSize to ignore grid")]
         public float gridSizeEpsilon = 0.05f;
+
+        public bool SnapToGrid
+        {
+            get { return gridSizeEpsilon < gridSize; }
+        }
     }
 }

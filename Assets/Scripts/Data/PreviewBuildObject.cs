@@ -12,7 +12,8 @@ namespace GeneralImplementations.Data
         public BuildObjectData buildObjectData;
         private BoxCollider previewCollider;
         private MeshRenderer previewRenderer;
-
+        public float userRotationF;
+        private bool isPreviewObjectVisible;
         public void Init(BuildObjectData _buildObjectData)
         {
             buildObjectData = _buildObjectData;
@@ -56,18 +57,19 @@ namespace GeneralImplementations.Data
         }
         public void SetPreviewColor(bool? _b = null)
         {
-            Debug.Log("PreviewBuildObject.SetPreviewColor();");
+           // Debug.Log("PreviewBuildObject.SetPreviewColor();");
 
             bool b = _b == null ? CheckAvailability() : (bool)_b;
-
+            SingletonBuildManager.BuildPreviewExecutor.PreviewHelper.IsAvailable = b;
             PreviewRenderer.material.color = b ? SingletonBuildManager.PreviewData.availableColor : SingletonBuildManager.PreviewData.unavailableColor;
         }
 
         public void ToggleVisibility(bool b)
         {
-            Debug.Log("PreviewBuildObject.ToggleVisibility("+b+");");
+           // Debug.Log("PreviewBuildObject.ToggleVisibility("+b+");");
             // PreviewRenderer.enabled = b;
-            GameObjectInstance.SetActive(b);
+            isPreviewObjectVisible = b;
+        GameObjectInstance.SetActive(b);
         }
 
         public bool CheckAvailability()
@@ -85,7 +87,7 @@ namespace GeneralImplementations.Data
 
                 if (hitCollider.gameObject != gameObject && hitCollider.gameObject.layer != SpawnableBuildObject.BuildObjectData.layersToBuildOn)
                 {
-                    //Debug.Log("Unavailable: " + hitCollider.gameObject.name);
+                    
                     return false;
                 }
 

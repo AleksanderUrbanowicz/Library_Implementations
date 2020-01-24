@@ -113,8 +113,8 @@ namespace GeneralImplementations.Managers
           
             Vector3 normal = _RaycastExecutorData.RaycastHitOutput.normal;
             Vector3 point = _RaycastExecutorData.RaycastHitOutput.point;
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(point, 0.04f);
+           // Gizmos.color = Color.magenta;
+           // Gizmos.DrawSphere(point, 0.04f);
             // Gizmos.DrawLine(targetFrom.position, targetFrom.position+ point);
             // Gizmos.DrawLine(targetFrom.position,  point);
 
